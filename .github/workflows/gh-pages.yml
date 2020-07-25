@@ -11,17 +11,21 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
+      working-directory: App
       with:
         dotnet-version: 3.1.302
     - name: Find and Replace
       uses: jacobtomlinson/gha-find-replace@0.1.2
+      working-directory: App
       with:
         find: "<base href=""/"" />"
         replace: "<base href=""/TrackerSafe/"" />"
     - name: Publish with dotnet
       run: dotnet publish --configuration Release --output build
+      working-directory: App
     - name: Deploy to Github Pages
       uses: JamesIves/github-pages-deploy-action@releases/v3
+      working-directory: App
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BASE_BRANCH: development # The branch the action should deploy from.
