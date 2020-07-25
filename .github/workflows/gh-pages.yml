@@ -13,6 +13,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.302
+    - name: Find and Replace
+      uses: jacobtomlinson/gha-find-replace@0.1.2
+      with:
+        find: "<base href=""/"" />"
+        replace: "<base href=""/TrackerSafe/"" />"
     - name: Publish with dotnet
       run: dotnet publish --configuration Release --output build
     - name: Deploy to Github Pages
