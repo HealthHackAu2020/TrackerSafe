@@ -1,0 +1,19 @@
+@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.InvalidSession)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject ILogger<InvalidSession> logger
+
+<h3>You are not logged in.</h3>
+<button class="btn btn-primary btn-block mt-5" type="button" @onclick="RedirectToLogin">Log In</button>
+
+@code {
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+  }
+
+  protected void RedirectToLogin()
+  {
+    navManager.NavigateTo(AppConstants.PageUrlLogin);
+  }
+}

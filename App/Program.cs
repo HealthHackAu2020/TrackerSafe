@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using BlazorStrap;
+using Blazored.LocalStorage;
+using Blazor.Extensions.Logging;
 
 namespace app
 {
@@ -19,6 +21,13 @@ namespace app
       builder.RootComponents.Add<App>("app");
 
       builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+      builder.Services.AddBlazoredLocalStorage();
+
+      builder.Services.AddLogging(builder => builder
+          .AddBrowserConsole()
+          .SetMinimumLevel(LogLevel.Information)
+      );
 
       await builder.Build().RunAsync();
     }

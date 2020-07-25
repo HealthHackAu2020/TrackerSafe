@@ -1,4 +1,7 @@
-﻿@page "/"
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlHome)]
+@inject NavigationManager navManager
+@inject ILogger<Index> logger
+
 <div class="col">
   <!-- <h1><span class="glyphicon glyphicon-lock"></span></h1> -->
   <!-- <LOCK GOES HERE> -->
@@ -9,7 +12,22 @@
     <h5 class="text-center">Help stop the spread of COVID-19 while staying completely anonymous.</h5>
   </div>
   <div class="col-6 text-center">
-    <button class="btn btn-primary btn-block mt-5" type="submit">Sign Up</button>
-    <button class="btn btn-primary btn-block" type="submit">Log In</button>
+    <button class="btn btn-primary btn-block mt-5" type="button" @onclick="NavigateToSignUp">Sign Up</button>
+    <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToLogin">Log In</button>
   </div>
 </div>
+
+@code 
+{
+  private void NavigateToSignUp(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToSignUp");
+    navManager.NavigateTo(AppConstants.PageUrlSignUp);
+  }
+
+  private void NavigateToLogin(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToLogin");
+    navManager.NavigateTo(AppConstants.PageUrlLogin);
+  }
+}
