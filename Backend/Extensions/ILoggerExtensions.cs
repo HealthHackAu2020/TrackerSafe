@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using TrackerSafe.Backend.Shared;
+using TrackerSafe.Shared;
 
 namespace TrackerSafe.Backend.Extensions
 {

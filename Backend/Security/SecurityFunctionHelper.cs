@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
-using TrackerSafe.Backend.Shared;
+using TrackerSafe.Shared;
 namespace TrackerSafe.Backend.Security
 {
   public static class SecurityFunctionHelper

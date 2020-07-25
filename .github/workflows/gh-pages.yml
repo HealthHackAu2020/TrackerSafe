@@ -16,7 +16,6 @@ jobs:
         dotnet-version: 3.1.302
     - name: Find and Replace
       uses: jacobtomlinson/gha-find-replace@0.1.2
-      working-directory: App
       with:
         find: "<base href=""/"" />"
         replace: "<base href=""/TrackerSafe/"" />"
