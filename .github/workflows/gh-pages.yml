@@ -23,7 +23,6 @@ jobs:
       working-directory: App
     - name: Deploy to Github Pages
       uses: JamesIves/github-pages-deploy-action@releases/v3
-      working-directory: App
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BASE_BRANCH: development # The branch the action should deploy from.
