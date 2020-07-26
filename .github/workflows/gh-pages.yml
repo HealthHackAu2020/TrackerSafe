@@ -13,11 +13,16 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.302
-    - name: Find and Replace
+    - name: Find and Replace Base Url
       uses: jacobtomlinson/gha-find-replace@0.1.2
       with:
         find: "<base href='/' />"
         replace: "<base href='/TrackerSafe/' />"
+      - name: Find and Replace Version
+      uses: jacobtomlinson/gha-find-replace@0.1.2
+      with:
+        find: "/* version */"
+        replace: "/* version = ${{ steps.current-time.outputs.time }} */"
     - name: Publish with dotnet
       run: dotnet publish --configuration Release --output build
       working-directory: App
