@@ -18,7 +18,7 @@ jobs:
       with:
         find: "<base href='/' />"
         replace: "<base href='/TrackerSafe/' />"
-      - name: Find and Replace Version
+    - name: Find and Replace Version
       uses: jacobtomlinson/gha-find-replace@0.1.2
       with:
         find: "/* version */"
