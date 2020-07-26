@@ -17,6 +17,7 @@ namespace TrackerSafe.Backend.Functions
   public class SignUpUser
   {
     private IUserDataStore _userDataStore;
+    private readonly Random _random = new Random();  
     public SignUpUser(IUserDataStore userDataStore)
     {
       _userDataStore = userDataStore;
@@ -58,13 +59,29 @@ namespace TrackerSafe.Backend.Functions
       else
       {
         var user = new User();
-        user.UserNameLower= data.UserName.ToLower();
-        user.UserNameDisplay = data.UserName;
-        user.SuppliedReferralCode = data.ReferralCode;
+        user.UserNameLower= data.UserName?.Trim()?.ToLower();
+        user.UserNameDisplay = data.UserName?.Trim();
+        user.SuppliedReferralCode = data.ReferralCode.Trim();
         var pwHasher = new PasswordHasher<User>();
         user.PwHash = pwHasher.HashPassword(user, data.Password);
         var createdUser = await _userDataStore.CreateAsync(user);
         log.LogInformation("Created user with id '{UserId}'", createdUser.Id);
+
+        //get a unique referral code.  Just for fun let's make it a 6 digit number so it's easy to remember
+        //but can't overlap...
+        var foundUnique = false;
+        while (!foundUnique)
+        {
+          var referralCode = GenerateRandomNumber(100000, 999999).ToString();
+          var existing = await _userDataStore.GetByReferralCodeAsync(referralCode);
+          if (existing == null)
+          {
+            log.LogInformation("Found unique referral code '{ReferralCode}' for user id '{UserId}' with name '{UserName}'", referralCode, createdUser.Id, createdUser.UserNameDisplay);
+            foundUnique = true;
+            createdUser.MyReferralCode = referralCode;
+            await _userDataStore.UpdateAsync(createdUser.Id, createdUser);
+          }
+        }
 
         successful = true;
       }
@@ -72,5 +89,10 @@ namespace TrackerSafe.Backend.Functions
       log.LogInformation("Result for '{UserName}' successful: {Successful}, message: {Message}", data.UserName, successful, message);
       return new OkObjectResult(new SignUpUserResponse(data.UserName, successful, message));
     }
+
+    public int GenerateRandomNumber(int min, int max)  
+    {  
+      return _random.Next(min, max);  
+    }  
   }
 }
