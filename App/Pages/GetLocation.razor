@@ -1,0 +1,41 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlGetLocation)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<GetLocation> logger
+@inject LocationService locationService
+<div class="col">
+  <h1 class="text-center top30 mt-5">Get My Current Location</h1>
+</div>
+<div class="row justify-content-center pt-3">
+  @if (isLoading)
+  {
+    <button class="btn btn-primary btn-block mt-5" type="button" disabled>
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </button>
+  }
+  else
+  {
+    <pre>
+Lat:      @location?.Latitude
+Long:     @location?.Longitude
+Accuracy: @location?.Accuracy
+    </pre>
+  }
+</div>
+
+@code 
+{
+  private bool isLoading = false;
+
+  private Location location;
+
+  protected async override Task OnInitializedAsync()
+  {
+    isLoading = true;
+    location = await locationService.GetLocationAsync();
+    isLoading = false;
+    StateHasChanged();
+  }
+}

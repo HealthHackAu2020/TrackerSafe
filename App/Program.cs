@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using BlazorStrap;
 using Blazored.LocalStorage;
 using Blazor.Extensions.Logging;
+using AspNetMonsters.Blazor.Geolocation;
 
 namespace app
 {
@@ -28,6 +29,8 @@ namespace app
           .AddBrowserConsole()
           .SetMinimumLevel(LogLevel.Information)
       );
+
+      builder.Services.AddSingleton<LocationService>();
 
       await builder.Build().RunAsync();
     }
