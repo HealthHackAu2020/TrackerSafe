@@ -18,20 +18,33 @@
   }
   else
   {
-    <pre>
-Waiting for notifications...
-    </pre>
+    if (pushSubscriptionId != null && pushSubscriptionId.Value != Guid.Empty)
+    {
+      <pre>Waiting for notifications...</pre>
+      <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SendTestNotification">Send Test Notification</button>
+    }
+    else
+    {
+      <div class="alert alert-danger row justify-content-center" role="alert">
+        You have not registered push notifications on this device.
+      </div>
+    }
   }
 </div>
 
 @code 
 {
   private bool isLoading = false;
+  private Guid? pushSubscriptionId;
 
   protected async override Task OnInitializedAsync()
   {    
     isLoading = true;
-    await RequestNotificationSubscriptionAsync();
+    pushSubscriptionId = localStorage.GetPushNotificationId();
+    if (pushSubscriptionId == null || pushSubscriptionId.Value == Guid.Empty)
+    {
+      await RequestNotificationSubscriptionAsync();
+    }
     isLoading = false;
     StateHasChanged();
   }
@@ -57,5 +70,17 @@ Waiting for notifications...
     var request = new CreatePushSubscriptionRequest(deviceId, subscription.Url, subscription.P256dh, subscription.Auth);
     var result = await Http.PostApiData<CreatePushSubscriptionResponse, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/CreatePushSubscription", request);
     localStorage.SetPushNotificationId(result.PushSubscriptionId);
+    pushSubscriptionId = result.PushSubscriptionId;
+  }
+
+  private async void SendTestNotification(MouseEventArgs e)
+  {
+    isLoading = true;
+    StateHasChanged();
+    logger.LogDebug($"SendTestNotification");
+    var result = await Http.PostApiData<string, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/SendPushNotificationToSelf", "Testing push to self!");
+    logger.LogDebug($"SendTestNotification got result: {result}");
+    isLoading = false;
+    StateHasChanged();
   }
 }

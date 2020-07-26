@@ -3,8 +3,16 @@
 @inject NavigationManager navManager
 @inject ILogger<InvalidSession> logger
 
-<h3>You are not logged in.</h3>
-<button class="btn btn-primary btn-block mt-5" type="button" @onclick="RedirectToLogin">Log In</button>
+<div class="row justify-content-center">
+  <div class="col-9">
+    <h3 class="text-center">You are not logged in.</h3>
+    <h5 class="text-center">Help stop the spread of COVID-19 while staying completely anonymous.</h5>
+  </div>
+  <div class="col-6 text-center">
+    <button class="btn btn-primary btn-block mt-5" type="button" @onclick="NavigateToSignUp">Sign Up</button>
+    <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToLogin">Log In</button>
+  </div>
+</div>
 
 @code {
   protected override async Task OnInitializedAsync()
@@ -12,8 +20,15 @@
     await base.OnInitializedAsync();
   }
 
-  protected void RedirectToLogin()
+  private void NavigateToSignUp(MouseEventArgs e)
   {
+    logger.LogDebug("NavigateToSignUp");
+    navManager.NavigateToPage(AppConstants.PageUrlSignUp);
+  }
+
+  private void NavigateToLogin(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToLogin");
     navManager.NavigateToPage(AppConstants.PageUrlLogin);
   }
 }
