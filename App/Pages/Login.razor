@@ -1,6 +1,8 @@
 ﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlLogin)]
+@inject HttpClient Http
 @inject NavigationManager navManager
-@inject ILogger<SignUp> logger
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<Login> logger
 <div class="col">
   <h1 class="text-center top30 mt-5">Log In</h1>
 </div>
@@ -8,24 +10,62 @@
   <form>
     <div class="form-group">
       <label for="username">Username</label>
-      <input type="text" class="form-control" id="username">
+      <input type="text" class="form-control" id="username" @bind-value="formData.UserName">
     </div>
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" class="form-control" id="password">
+      <input type="password" class="form-control" id="password" @bind-value="formData.Password">
     </div>
-    <div class="row justify-content-center">
-      <div class="col-9">
-        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="InitiateLogin">Log In</button>
+    @if (!string.IsNullOrWhiteSpace(message))
+    {
+      <div class="alert alert-danger row justify-content-center" role="alert">
+        @message
       </div>
-    </div>
+    }
+    @if (isSuccessful)
+    {
+      <div class="alert alert-success row justify-content-center" role="alert">
+        You have successfully logged in!
+      </div>
+    }
+    else
+    {
+      <div class="row justify-content-center">
+        <div class="col-9">
+          @if (isLoading)
+          {
+            <button class="btn btn-primary btn-block mt-5" type="button" disabled>
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Loading...
+            </button>
+          }
+          else
+          {
+            <button class="btn btn-primary btn-block mt-5" type="button" @onclick="InitiateLogin">Log In</button>
+          }
+        </div>
+      </div>
+    }
   </form>
 </div>
 
 @code 
 {
-  private void InitiateLogin(MouseEventArgs e)
+  private LogInUserRequest formData = new LogInUserRequest();
+  private bool isSuccessful = false;
+  private string message = "";
+  private bool isLoading = false;
+  private async void InitiateLogin(MouseEventArgs e)
   {
-    
+    isLoading = true;
+    StateHasChanged();
+    logger.LogDebug($"InitiateLogin as {formData.UserName}");
+    var result = await Http.PostApiData<LogInUserResponse, Login>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/LogInUser", formData);
+    logger.LogDebug($"InitiateLogin got result: {result.Successful} with message: {result.Message}");
+    isSuccessful = result.Successful;
+    message = result.Message;
+    localStorage.SetJwt(result.Jwt);
+    isLoading = false;
+    StateHasChanged();
   }
 }
