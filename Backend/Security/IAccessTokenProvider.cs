@@ -12,9 +12,9 @@ namespace TrackerSafe.Backend.Security
     /// Generate an access token, returning the token as a result.
     /// </summary>
     /// <param name="userId">The userid (Sid) of the user.</param>
-    /// <param name="email">The email (NameIdentifier) of the user.</param>
+    /// <param name="userName">The username (NameIdentifier) of the user.</param>
     /// <returns>A result that contains the security principal.</returns>
-    string GenerateToken(string userId, string email);
+    string GenerateToken(string userId, string userName);
 
     /// <summary>
     /// Validate the access token, returning the security principal in a result.

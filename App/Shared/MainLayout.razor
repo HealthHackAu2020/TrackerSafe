@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<MainLayout> logger
 
 @* <div class="sidebar">
     <NavMenu />
@@ -13,3 +16,14 @@
     @Body
   </div>
 </div>
+
+@code
+{
+  protected async override Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    var sessionId = Guid.NewGuid().ToString();
+    logger.LogDebug("OnInitializedAsync for new session {SessionId}", sessionId);
+    localStorage.SetSessionId(sessionId);
+  }
+}

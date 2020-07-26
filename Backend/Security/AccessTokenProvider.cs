@@ -26,7 +26,7 @@ namespace TrackerSafe.Backend.Security
       _issuer = issuer;
     }
 
-    public string GenerateToken(string userId, string email)
+    public string GenerateToken(string userId, string userName)
     {
       var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_issuerToken));
 
@@ -35,10 +35,10 @@ namespace TrackerSafe.Backend.Security
       {
         Subject = new ClaimsIdentity(new Claim[]
         {
-          new Claim(ClaimTypes.NameIdentifier, email),
+          new Claim(ClaimTypes.NameIdentifier, userName),
           new Claim(ClaimTypes.Sid, userId)
         }),
-        Expires = DateTime.UtcNow.AddDays(1),
+        Expires = DateTime.UtcNow.AddDays(14),
         Issuer = _issuer,
         Audience = _audience,
         SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
