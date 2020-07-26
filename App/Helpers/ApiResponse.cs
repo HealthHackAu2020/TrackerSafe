@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using app.Extensions;
 
 namespace app.Helpers
 {
@@ -16,11 +17,11 @@ namespace app.Helpers
         var httpEx = ex as System.Net.Http.HttpRequestException;
         if (ex.Message.Contains("401") || ex.Message.Contains("403") || ex.Message.Contains("404"))
         {
-          navManager.NavigateTo("invalid-session", false);
+          navManager.NavigateToPage(TrackerSafe.App.AppConstants.InvalidSession);
         }
         else if (ex.Message.Contains("500"))
         {
-          navManager.NavigateTo("unexpected-error", false);
+          navManager.NavigateToPage(TrackerSafe.App.AppConstants.UnexpectedError);
         }
       }
     }
@@ -30,12 +31,12 @@ namespace app.Helpers
       if ((int)msg.StatusCode >= 300 && (int)msg.StatusCode < 500)
       {
         logger.LogError($"Error from API Call - status {msg.StatusCode}");
-        navManager.NavigateTo("invalid-session", false);
+        navManager.NavigateToPage(TrackerSafe.App.AppConstants.InvalidSession);
       }
       else if ((int)msg.StatusCode >= 500)
       {
         logger.LogError($"Error from API Call - status {msg.StatusCode}");
-        navManager.NavigateTo("unexpected-error", false);
+        navManager.NavigateToPage(TrackerSafe.App.AppConstants.UnexpectedError);
       }
       
     }
