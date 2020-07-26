@@ -13,8 +13,9 @@ namespace TrackerSafe.Backend.Security
       switch (tokenRes.Status)
       {
         case AccessTokenStatus.Valid:
+          var userId = tokenRes.Principal.FindFirst(ClaimTypes.Sid)?.Value;
           var userName = tokenRes.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-          return new UserSessionDetails(userName);
+          return new UserSessionDetails(userId, userName);
         case AccessTokenStatus.NoToken:
           log.LogInformation("AccessTokenStatus.NoToken: returning UnauthorizedResult");
           throw new UnauthorizedUserException();

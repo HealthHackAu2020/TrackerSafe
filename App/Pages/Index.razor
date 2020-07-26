@@ -14,6 +14,7 @@
   <div class="col-6 text-center">
     <button class="btn btn-primary btn-block mt-5" type="button" @onclick="NavigateToSignUp">Sign Up</button>
     <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToLogin">Log In</button>
+    <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToPushNotifications">Test Push Notifications</button>
     <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToGetLocation">Test Get Location</button>
   </div>
 </div>
@@ -30,6 +31,12 @@
   {
     logger.LogDebug("NavigateToLogin");
     navManager.NavigateToPage(AppConstants.PageUrlLogin);
+  }
+
+  private void NavigateToPushNotifications(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToPushNotifications");
+    navManager.NavigateToPage(AppConstants.PageUrlPushNotifications);
   }
 
   private void NavigateToGetLocation(MouseEventArgs e)

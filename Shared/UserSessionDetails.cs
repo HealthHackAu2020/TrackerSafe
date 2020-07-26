@@ -5,10 +5,12 @@ namespace TrackerSafe.Shared
     public UserSessionDetails()
     {
     }
-    public UserSessionDetails(string userName)
+    public UserSessionDetails(string userId, string userName)
     {
+      UserId = userId;
       UserName = userName;
     }
+    public string UserId { get; set; }
     public string UserName { get; set; }
   }
 }

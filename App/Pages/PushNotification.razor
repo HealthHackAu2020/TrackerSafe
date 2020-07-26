@@ -1,0 +1,61 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlPushNotifications)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<PushNotification> logger
+@inject IJSRuntime JSRuntime
+
+<div class="col">
+  <h1 class="text-center top30 mt-5">Web Push Notifications</h1>
+</div>
+<div class="row justify-content-center pt-3">
+  @if (isLoading)
+  {
+    <button class="btn btn-primary btn-block mt-5" type="button" disabled>
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </button>
+  }
+  else
+  {
+    <pre>
+Waiting for notifications...
+    </pre>
+  }
+</div>
+
+@code 
+{
+  private bool isLoading = false;
+
+  protected async override Task OnInitializedAsync()
+  {    
+    isLoading = true;
+    await RequestNotificationSubscriptionAsync();
+    isLoading = false;
+    StateHasChanged();
+  }
+
+  public async Task RequestNotificationSubscriptionAsync()
+  {
+    var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+    if (subscription != null)
+    {
+      logger.LogInformation("RequestNotificationSubscriptionAsync - got subscription!");
+      await SubscribeToNotifications(subscription);
+    }
+    else
+    {
+      logger.LogInformation("RequestNotificationSubscriptionAsync - failed to get subscription!");
+    }
+  }
+
+  public async Task SubscribeToNotifications(NotificationSubscription subscription)
+  {
+    var deviceId = localStorage.GetDeviceId();
+    logger.LogInformation("SubscribeToNotifications sending for device {DeviceId}", deviceId);
+    var request = new CreatePushSubscriptionRequest(deviceId, subscription.Url, subscription.P256dh, subscription.Auth);
+    var result = await Http.PostApiData<CreatePushSubscriptionResponse, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/CreatePushSubscription", request);
+    localStorage.SetPushNotificationId(result.PushSubscriptionId);
+  }
+}

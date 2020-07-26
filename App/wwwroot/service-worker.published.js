@@ -47,4 +47,17 @@ async function onFetch(event) {
     return cachedResponse || fetch(event.request);
 }
 
+self.addEventListener('push', event => {
+    const payload = event.data.json();
+    console.log('Got Push: ' + payload);
+    event.waitUntil(
+        self.registration.showNotification('Blazing Pizza', {
+        body: payload.message,
+        icon: 'img/icon-512.png',
+        vibrate: [100, 50, 100],
+        data: { url: payload.url }
+        })
+    );
+});
+
 /* version */

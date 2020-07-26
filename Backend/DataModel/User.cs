@@ -2,6 +2,7 @@ using System.Diagnostics;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Collections.Generic;
 
 namespace TrackerSafe.Backend.DataModel
 {
@@ -15,5 +16,6 @@ namespace TrackerSafe.Backend.DataModel
     public string SuppliedReferralCode { get; set; }
     public string MyReferralCode { get; set; }
     public string PwHash { get; set; }
+    public List<PushSubscription> PushSubscriptions { get; set; }
   }
 }
