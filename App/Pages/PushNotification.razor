@@ -4,40 +4,41 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject ILogger<PushNotification> logger
 @inject IJSRuntime JSRuntime
-
-<div class="col">
-  <h1 class="text-center top30 mt-5"><i class="fas fa-bell"></i> Provide Access to your Notifications</h1>
-</div>
-<div class="row justify-content-center pt-3">
-  @if (isLoading)
-  {
-    <LoadingButton></LoadingButton>
-  }
-  else
-  {
-    if (isFirstTime)
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <h1 class="text-center top30 mt-5"><i class="fas fa-bell"></i> Provide Access to your Notifications</h1>
+  </div>
+  <div class="row justify-content-center pt-3">
+    @if (isLoading)
     {
-      <div class="row justify-content-center">
-        <h3>We will notify you when you come in contact with a confirmed COVID case</h3>
-        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupNotifications">Setup Web Push Notifications</button>
-      </div>
-    }
-    else if (isConfigured)
-    {
-      <div class="alert alert-success row justify-content-center" role="alert">
-        <Spinner></Spinner>You have successfully set up Web Push Notifications!
-      </div>
+      <LoadingButton></LoadingButton>
     }
     else
     {
-      <div class="alert alert-danger row justify-content-center" role="alert">
-        You have not registered Web Push Notifications on this device.  If your device prompted you and you did not allow it, please find instructions on how to retry for different browsers&nbsp;<a href="https://mobilemonkey.com/help/article/xjrvxif08a-how-to-unblock-notifications-permissions-on-your-browser" target="_blank" alt="instructions for notifications">here <i class="fas fa-external-link-alt"></i></a>.
-      </div>
-      <div class="row justify-content-center">
-        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupNotifications">Try Again</button>
-      </div>
+      if (isFirstTime)
+      {
+        <div class="row justify-content-center">
+          <h3>We will notify you when you come in contact with a confirmed COVID case</h3>
+          <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupNotifications">Setup Web Push Notifications</button>
+        </div>
+      }
+      else if (isConfigured)
+      {
+        <div class="alert alert-success row justify-content-center" role="alert">
+          <Spinner></Spinner>You have successfully set up Web Push Notifications!
+        </div>
+      }
+      else
+      {
+        <div class="alert alert-danger row justify-content-center" role="alert">
+          You have not registered Web Push Notifications on this device.  If your device prompted you and you did not allow it, please find instructions on how to retry for different browsers&nbsp;<a href="https://mobilemonkey.com/help/article/xjrvxif08a-how-to-unblock-notifications-permissions-on-your-browser" target="_blank" alt="instructions for notifications">here <i class="fas fa-external-link-alt"></i></a>.
+        </div>
+        <div class="row justify-content-center">
+          <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupNotifications">Try Again</button>
+        </div>
+      }
     }
-  }
+  </div>
 </div>
 
 @code 
