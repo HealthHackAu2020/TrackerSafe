@@ -6,27 +6,35 @@
 @inject IJSRuntime JSRuntime
 
 <div class="col">
-  <h1 class="text-center top30 mt-5">Web Push Notifications</h1>
+  <h1 class="text-center top30 mt-5"><i class="fas fa-bell"></i> Provide Access to your Notifications</h1>
 </div>
 <div class="row justify-content-center pt-3">
   @if (isLoading)
   {
-    <button class="btn btn-primary btn-block mt-5" type="button" disabled>
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Loading...
-    </button>
+    <LoadingButton></LoadingButton>
   }
   else
   {
-    if (pushSubscriptionId != null && pushSubscriptionId.Value != Guid.Empty)
+    if (isFirstTime)
     {
-      <pre>Waiting for notifications...</pre>
-      <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SendTestNotification">Send Test Notification</button>
+      <div class="row justify-content-center">
+        <h3>We will notify you when you come in contact with a confirmed COVID case</h3>
+        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupNotifications">Setup Web Push Notifications</button>
+      </div>
+    }
+    else if (isConfigured)
+    {
+      <div class="alert alert-success row justify-content-center" role="alert">
+        <Spinner></Spinner>You have successfully set up Web Push Notifications!
+      </div>
     }
     else
     {
       <div class="alert alert-danger row justify-content-center" role="alert">
-        You have not registered push notifications on this device.
+        You have not registered Web Push Notifications on this device.  If your device prompted you and you did not allow it, please find instructions on how to retry for different browsers&nbsp;<a href="https://mobilemonkey.com/help/article/xjrvxif08a-how-to-unblock-notifications-permissions-on-your-browser" target="_blank" alt="instructions for notifications">here <i class="fas fa-external-link-alt"></i></a>.
+      </div>
+      <div class="row justify-content-center">
+        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupNotifications">Try Again</button>
       </div>
     }
   }
@@ -35,18 +43,39 @@
 @code 
 {
   private bool isLoading = false;
-  private Guid? pushSubscriptionId;
+  private bool isFirstTime = false;
+  private bool isConfigured = false;
 
-  protected async override Task OnInitializedAsync()
+  protected override Task OnInitializedAsync()
   {    
     isLoading = true;
-    pushSubscriptionId = localStorage.GetPushNotificationId();
-    if (pushSubscriptionId == null || pushSubscriptionId.Value == Guid.Empty)
+    var appState = localStorage.GetAppState();
+    if (appState.PushNotificationState == AppState.FeatureState.None)
+    {
+      isFirstTime = true;
+    }
+    isLoading = false;
+    return Task.CompletedTask;
+  }
+
+  private async void SetupNotifications(MouseEventArgs e)
+  {
+    isFirstTime = false;
+    isLoading = true;
+    StateHasChanged();
+    logger.LogDebug($"SetupNotifications");
+    if (!isConfigured)
     {
       await RequestNotificationSubscriptionAsync();
     }
     isLoading = false;
     StateHasChanged();
+
+    if (isConfigured)
+    {
+      await Task.Delay(3000);
+      navManager.NavigateToPage(AppConstants.PageUrlHome, true);
+    }
   }
 
   public async Task RequestNotificationSubscriptionAsync()
@@ -56,10 +85,20 @@
     {
       logger.LogInformation("RequestNotificationSubscriptionAsync - got subscription!");
       await SubscribeToNotifications(subscription);
+
+      var appState = localStorage.GetAppState();
+      appState.PushNotificationState = AppState.FeatureState.Configured;
+      localStorage.SetAppState(appState);
+      isConfigured = true;
     }
     else
     {
       logger.LogInformation("RequestNotificationSubscriptionAsync - failed to get subscription!");
+
+      var appState = localStorage.GetAppState();
+      appState.PushNotificationState = AppState.FeatureState.OptedOut;
+      localStorage.SetAppState(appState);
+      isConfigured = false;
     }
   }
 
@@ -70,17 +109,5 @@
     var request = new CreatePushSubscriptionRequest(deviceId, subscription.Url, subscription.P256dh, subscription.Auth);
     var result = await Http.PostApiData<CreatePushSubscriptionResponse, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/CreatePushSubscription", request);
     localStorage.SetPushNotificationId(result.PushSubscriptionId);
-    pushSubscriptionId = result.PushSubscriptionId;
-  }
-
-  private async void SendTestNotification(MouseEventArgs e)
-  {
-    isLoading = true;
-    StateHasChanged();
-    logger.LogDebug($"SendTestNotification");
-    var result = await Http.PostApiData<string, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/SendPushNotificationToSelf", "Testing push to self!");
-    logger.LogDebug($"SendTestNotification got result: {result}");
-    isLoading = false;
-    StateHasChanged();
   }
 }

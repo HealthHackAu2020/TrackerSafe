@@ -10,7 +10,7 @@
   @if (isSuccessful)
   {
     <div class="alert alert-success row justify-content-center" role="alert">
-      You have successfully logged out!
+      <Spinner></Spinner>You have successfully logged out!
     </div>
   }
   else
@@ -18,10 +18,7 @@
     <div class="row justify-content-center">
       @if (isLoading)
       {
-        <button class="btn btn-primary btn-block mt-5" type="button" disabled>
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          Loading...
-        </button>
+        <LoadingButton></LoadingButton>
       }
       else
       {
@@ -44,6 +41,7 @@
     await Http.PostApiData<RemovePushSubscriptionResponse, Logout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/RemovePushSubscription", request);
     localStorage.SetJwt(null);
     localStorage.SetPushNotificationId(new Guid?());
+    localStorage.SetAppState(null);
     isLoading = false;
     isSuccessful = true;
     StateHasChanged();

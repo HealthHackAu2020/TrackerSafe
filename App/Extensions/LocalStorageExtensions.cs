@@ -1,4 +1,5 @@
 using System;
+using TrackerSafe.Shared;
 namespace app.Extensions
 {
   public static class ILocalStorageServiceExtensions 
@@ -40,6 +41,22 @@ namespace app.Extensions
     public static Guid? GetPushNotificationId(this Blazored.LocalStorage.ISyncLocalStorageService localStorage)
     {
       return localStorage.GetItem<Guid?>("pid");
+    }
+
+    public static void SetAppState(this Blazored.LocalStorage.ISyncLocalStorageService localStorage, AppState value)
+    {
+      localStorage.SetItem("aps", value);
+    }
+    public static AppState GetAppState(this Blazored.LocalStorage.ISyncLocalStorageService localStorage)
+    {
+      var appState = localStorage.GetItem<AppState>("aps");
+      if (appState == null)
+      {
+        //We always need one, if there isn't one, start with default
+        appState = new AppState();
+        localStorage.SetItem("aps", appState);
+      }
+      return appState;
     }
   }
 }

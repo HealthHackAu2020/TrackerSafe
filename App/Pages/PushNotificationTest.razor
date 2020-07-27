@@ -1,0 +1,83 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlPushNotificationsTest)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<PushNotification> logger
+@inject IJSRuntime JSRuntime
+
+<div class="col">
+  <h1 class="text-center top30 mt-5"><i class="fas fa-bell"></i> Provide Access to your Notifications</h1>
+</div>
+<div class="row justify-content-center pt-3">
+  @if (isLoading)
+  {
+    <LoadingButton></LoadingButton>
+  }
+  else
+  {
+    if (pushSubscriptionId != null && pushSubscriptionId.Value != Guid.Empty)
+    {
+      <pre>Waiting for notifications...</pre>
+      <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SendTestNotification">Send Test Notification</button>
+    }
+    else
+    {
+      <div class="alert alert-danger row justify-content-center" role="alert">
+        You have not registered push notifications on this device.
+      </div>
+    }
+  }
+</div>
+
+@code 
+{
+  private bool isLoading = false;
+  private Guid? pushSubscriptionId;
+
+  protected async override Task OnInitializedAsync()
+  {    
+    isLoading = true;
+    pushSubscriptionId = localStorage.GetPushNotificationId();
+    if (pushSubscriptionId == null || pushSubscriptionId.Value == Guid.Empty)
+    {
+      await RequestNotificationSubscriptionAsync();
+    }
+    isLoading = false;
+    StateHasChanged();
+  }
+
+  public async Task RequestNotificationSubscriptionAsync()
+  {
+    var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+    if (subscription != null)
+    {
+      logger.LogInformation("RequestNotificationSubscriptionAsync - got subscription!");
+      await SubscribeToNotifications(subscription);
+    }
+    else
+    {
+      logger.LogInformation("RequestNotificationSubscriptionAsync - failed to get subscription!");
+    }
+  }
+
+  public async Task SubscribeToNotifications(NotificationSubscription subscription)
+  {
+    var deviceId = localStorage.GetDeviceId();
+    logger.LogInformation("SubscribeToNotifications sending for device {DeviceId}", deviceId);
+    var request = new CreatePushSubscriptionRequest(deviceId, subscription.Url, subscription.P256dh, subscription.Auth);
+    var result = await Http.PostApiData<CreatePushSubscriptionResponse, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/CreatePushSubscription", request);
+    localStorage.SetPushNotificationId(result.PushSubscriptionId);
+    pushSubscriptionId = result.PushSubscriptionId;
+  }
+
+  private async void SendTestNotification(MouseEventArgs e)
+  {
+    isLoading = true;
+    StateHasChanged();
+    logger.LogDebug($"SendTestNotification");
+    var result = await Http.PostApiData<string, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/SendPushNotificationToSelf", "Testing push to self!");
+    logger.LogDebug($"SendTestNotification got result: {result}");
+    isLoading = false;
+    StateHasChanged();
+  }
+}

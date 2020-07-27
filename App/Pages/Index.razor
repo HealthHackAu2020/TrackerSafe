@@ -1,47 +1,80 @@
 ﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlHome)]
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject NavigationManager navManager
 @inject ILogger<Index> logger
 
-<div class="col">
-  <!-- <h1><span class="glyphicon glyphicon-lock"></span></h1> -->
-  <!-- <LOCK GOES HERE> -->
-  <h1 class="text-center top30 mt-5">Tracker Safe</h1>
-</div>
-<div class="row justify-content-center">
-  <div class="col-9">
-    <h5 class="text-center">Help stop the spread of COVID-19 while staying completely anonymous.</h5>
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <h1 class="text-center top30 mt-5">Tracker Safe</h1>
   </div>
-  <div class="col-6 text-center">
-    <button class="btn btn-primary btn-block mt-5" type="button" @onclick="NavigateToSignUp">Sign Up</button>
-    <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToLogin">Log In</button>
-    <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToPushNotifications">Test Push Notifications</button>
-    <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToGetLocation">Test Get Location</button>
+  <div class="row justify-content-center">
+    <h3 class="text-center">Help stop the spread of COVID-19 while staying completely anonymous.</h3>
+  </div>
+  <div class="row justify-content-center">
+    <h5>Your App Status:</h5>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col">
+      <div class="alert alert-light text-right" role="alert">
+        Web Push Notifications:
+      </div>
+    </div>
+    <div class="col">
+      @if (featurePushNotificationsEnabled)
+      {
+        <FeatureEnabled></FeatureEnabled>
+      }
+      else
+      {
+        <FeatureDisabled></FeatureDisabled>
+      }
+    </div>
+    <div class="col">
+      <button class="btn btn-info" type="button" @onclick="NavigateToPushNotificationsTest">Test Push Notifications</button>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col">
+      <div class="alert alert-light text-right" role="alert">
+        Location:
+      </div>
+    </div>
+    <div class="col">
+      @if (featureLocationEnabled)
+      {
+        <FeatureEnabled></FeatureEnabled>
+      }
+      else
+      {
+        <FeatureDisabled></FeatureDisabled>
+      }
+    </div>
+    <div class="col">
+      
+    </div>
   </div>
 </div>
 
 @code 
 {
-  private void NavigateToSignUp(MouseEventArgs e)
+  private bool featurePushNotificationsEnabled = false;
+  private bool featureLocationEnabled = false;
+  protected override Task OnInitializedAsync()
   {
-    logger.LogDebug("NavigateToSignUp");
-    navManager.NavigateToPage(AppConstants.PageUrlSignUp);
+    var appState = localStorage.GetAppState();
+    if (appState.PushNotificationState == AppState.FeatureState.Configured)
+    {
+      featurePushNotificationsEnabled = true;
+    }
+    if (appState.LocationState == AppState.FeatureState.Configured)
+    {
+      featureLocationEnabled = true;
+    }
+    return Task.CompletedTask;
   }
-
-  private void NavigateToLogin(MouseEventArgs e)
+  private void NavigateToPushNotificationsTest(MouseEventArgs e)
   {
-    logger.LogDebug("NavigateToLogin");
-    navManager.NavigateToPage(AppConstants.PageUrlLogin);
-  }
-
-  private void NavigateToPushNotifications(MouseEventArgs e)
-  {
-    logger.LogDebug("NavigateToPushNotifications");
-    navManager.NavigateToPage(AppConstants.PageUrlPushNotifications);
-  }
-
-  private void NavigateToGetLocation(MouseEventArgs e)
-  {
-    logger.LogDebug("NavigateToGetLocation");
-    navManager.NavigateToPage(AppConstants.PageUrlGetLocation);
+    logger.LogDebug("NavigateToPushNotificationsTest");
+    navManager.NavigateToPage(AppConstants.PageUrlPushNotificationsTest);
   }
 }

@@ -33,7 +33,7 @@
     @if (isSuccessful)
     {
       <div class="alert alert-success row justify-content-center" role="alert">
-        You have successfully signed up!
+        <Spinner></Spinner>You have successfully signed up!
       </div>
     }
     else
@@ -42,10 +42,7 @@
         <div class="col-9">
           @if (isLoading)
           {
-            <button class="btn btn-primary btn-block mt-5" type="button" disabled>
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              Loading...
-            </button>
+            <LoadingButton></LoadingButton>
           }
           else
           {
@@ -77,6 +74,7 @@
     localStorage.SetJwt(result.Jwt);
     isLoading = false;
     StateHasChanged();
+    await Task.Delay(3000);
     navManager.NavigateToPage(AppConstants.PageUrlHome, true);
   }
 }

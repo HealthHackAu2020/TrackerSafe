@@ -21,9 +21,3 @@ self.addEventListener('notificationclick', event => {
   event.notification.close();
   //event.waitUntil(clients.openWindow(event.notification.data.url));
 });
-
-setTimeout(() => {
-  const img = new Image();
-  img.src = '/dog.svg';
-  document.body.appendChild(img);
-}, 3000);

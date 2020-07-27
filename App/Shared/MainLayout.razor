@@ -7,9 +7,19 @@
   <p>&nbsp;<!--Top bar content will go here--></p>
 </div> *@
 <div class="main">
-  <div class="content px-4">
-    @Body
-  </div>
+  @if (isLoading)
+  {
+    <div class="alert alert-info row justify-content-center" role="alert">
+      <Spinner></Spinner>Loading...
+    </div>
+  }
+  else
+  {
+    <div class="content px-4">
+      @Body
+    </div>
+  }
+  
   <div class="fixed-bottom justify-content-center bg-light bottom-bar">
     <div class="btn-group" role="group">
       <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
@@ -53,14 +63,34 @@
 {
   private bool isLoggedIn = false;
 
+  private bool isLoading = false;
+
   protected async override Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
+    isLoading = true;
     var sessionId = Guid.NewGuid().ToString();
     logger.LogDebug("OnInitializedAsync for new session {SessionId}", sessionId);
     localStorage.SetSessionId(sessionId);
 
+    var appState = localStorage.GetAppState();
+
     var result = await Http.PostApiData<GetLoggedInUserResponse, MainLayout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetLoggedInUser", new GetLoggedInUserRequest());
     isLoggedIn = result != null && !string.IsNullOrWhiteSpace(result.UserName);
+
+    logger.LogDebug("OnInitializedAsync isLoggedIn? {IsLoggedIn}; Push Notifications? {PushNotificationState}; ", isLoggedIn, appState.PushNotificationState);
+
+    if (appState.PushNotificationState == AppState.FeatureState.None)
+    {
+      logger.LogDebug("PushNotificationState is None, Redirecting");
+      navManager.NavigateToPage(AppConstants.PageUrlPushNotifications);
+    }
+    else if (appState.LocationState == AppState.FeatureState.None)
+    {
+      logger.LogDebug("LocationState is None, Redirecting");
+      navManager.NavigateToPage(AppConstants.PageUrlGetLocation);
+    }
+
+    isLoading = false;
   }
 }
