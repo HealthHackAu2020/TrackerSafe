@@ -1,0 +1,53 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlLogout)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<Logout> logger
+<div class="col">
+  <h1 class="text-center top30 mt-5">Logout</h1>
+</div>
+<div class="row justify-content-center pt-3">
+  @if (isSuccessful)
+  {
+    <div class="alert alert-success row justify-content-center" role="alert">
+      You have successfully logged out!
+    </div>
+  }
+  else
+  {
+    <div class="row justify-content-center">
+      @if (isLoading)
+      {
+        <button class="btn btn-primary btn-block mt-5" type="button" disabled>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Loading...
+        </button>
+      }
+      else
+      {
+        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="InitiateLogout">Logout</button>
+      }
+    </div>
+  }
+</div>
+
+@code 
+{
+  private bool isLoading = false;
+  private bool isSuccessful = false;
+  private async void InitiateLogout(MouseEventArgs e)
+  {
+    isLoading = true;
+    StateHasChanged();
+    logger.LogDebug($"InitiateLogout");
+    var request = new RemovePushSubscriptionRequest(localStorage.GetDeviceId());
+    await Http.PostApiData<RemovePushSubscriptionResponse, Logout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/RemovePushSubscription", request);
+    localStorage.SetJwt(null);
+    localStorage.SetPushNotificationId(new Guid?());
+    isLoading = false;
+    isSuccessful = true;
+    StateHasChanged();
+    await Task.Delay(3000);
+    navManager.NavigateToPage(AppConstants.PageUrlHome, true);
+  }
+}

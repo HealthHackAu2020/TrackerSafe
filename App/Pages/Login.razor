@@ -67,5 +67,6 @@
     localStorage.SetJwt(result.Jwt);
     isLoading = false;
     StateHasChanged();
+    navManager.NavigateToPage(AppConstants.PageUrlHome, true);
   }
 }

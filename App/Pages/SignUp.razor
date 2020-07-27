@@ -74,7 +74,9 @@
     logger.LogDebug($"InitiateSignUp got result: {result.Successful} with message: {result.Message}");
     isSuccessful = result.Successful;
     message = result.Message;
+    localStorage.SetJwt(result.Jwt);
     isLoading = false;
     StateHasChanged();
+    navManager.NavigateToPage(AppConstants.PageUrlHome, true);
   }
 }

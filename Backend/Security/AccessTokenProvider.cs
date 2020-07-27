@@ -58,6 +58,11 @@ namespace TrackerSafe.Backend.Security
         {
           var token = request.Headers[AUTH_HEADER_NAME].ToString().Substring(BEARER_PREFIX.Length);
 
+          if (string.IsNullOrWhiteSpace(token?.Trim()))
+          {
+            return AccessTokenResult.NoToken();
+          }
+
           var tokenParams = new TokenValidationParameters()
           {
             RequireSignedTokens = true,

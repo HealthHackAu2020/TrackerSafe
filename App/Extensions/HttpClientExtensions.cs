@@ -47,14 +47,15 @@ namespace app.Extensions
       {
         var sessionId = localStorage.GetSessionId();
         var jwt = localStorage.GetJwt();
-
+        var authString = string.IsNullOrWhiteSpace(jwt) ? "" : $"Bearer {jwt}";
+        
         var requestMessage = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri(url),
             Headers = { 
               { Constants.HttpHeaderSessionId, sessionId },
-              { HttpRequestHeader.Authorization.ToString(), $"Bearer {jwt}" }
+              { HttpRequestHeader.Authorization.ToString(), authString }
             },
             Content = new StringContent(JsonConvert.SerializeObject(requestPayload))
         };

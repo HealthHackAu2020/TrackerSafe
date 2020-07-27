@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using TrackerSafe.Backend.Extensions;
 using TrackerSafe.Backend.DataModel;
+using TrackerSafe.Backend.Security;
 using TrackerSafe.Shared;
 
 namespace TrackerSafe.Backend.Functions
@@ -17,10 +18,12 @@ namespace TrackerSafe.Backend.Functions
   public class SignUpUser
   {
     private IUserDataStore _userDataStore;
+    private IAccessTokenProvider _accessTokenProvider;
     private readonly Random _random = new Random();  
-    public SignUpUser(IUserDataStore userDataStore)
+    public SignUpUser(IUserDataStore userDataStore, IAccessTokenProvider accessTokenProvider)
     {
       _userDataStore = userDataStore;
+      _accessTokenProvider = accessTokenProvider;
     }
 
 
@@ -39,6 +42,7 @@ namespace TrackerSafe.Backend.Functions
       }
       var successful = false;
       var message  = "";
+      var jwt = "";
 
       if (string.IsNullOrWhiteSpace(data.UserName))
       {
@@ -59,7 +63,7 @@ namespace TrackerSafe.Backend.Functions
       else
       {
         var user = new User();
-        user.UserNameLower= data.UserName?.Trim()?.ToLower();
+        user.UserNameLower = data.UserName?.Trim()?.ToLower();
         user.UserNameDisplay = data.UserName?.Trim();
         user.SuppliedReferralCode = data.ReferralCode.Trim();
         var pwHasher = new PasswordHasher<User>();
@@ -83,11 +87,13 @@ namespace TrackerSafe.Backend.Functions
           }
         }
 
+        jwt = _accessTokenProvider.GenerateToken(createdUser.Id, createdUser.UserNameDisplay);
+
         successful = true;
       }
 
       log.LogInformation("Result for '{UserName}' successful: {Successful}, message: {Message}", data.UserName, successful, message);
-      return new OkObjectResult(new SignUpUserResponse(data.UserName, successful, message));
+      return new OkObjectResult(new SignUpUserResponse(data.UserName, successful, message, jwt));
     }
 
     public int GenerateRandomNumber(int min, int max)  

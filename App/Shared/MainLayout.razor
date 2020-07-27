@@ -1,30 +1,66 @@
 ﻿@inherits LayoutComponentBase
+@inject HttpClient Http
 @inject NavigationManager navManager
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject ILogger<MainLayout> logger
-
-@* <div class="sidebar">
-    <NavMenu />
+@* <div class="fixed-top justify-content-center bg-light">
+  <p>&nbsp;<!--Top bar content will go here--></p>
 </div> *@
-
 <div class="main">
-  <div class="top-row px-4">
-    <a href="/">Home</a>
-    <a href="https://github.com/HealthHackAu2020/TrackerSafe" target="_blank">About</a>
-  </div>
-
   <div class="content px-4">
     @Body
+  </div>
+  <div class="fixed-bottom justify-content-center bg-light bottom-bar">
+    <div class="btn-group" role="group">
+      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
+        <i class="fas fa-user"></i>
+        <br />
+        My Profile
+      </button>
+    </div>
+    <div class="btn-group" role="group">
+      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
+        <i class="fas fa-compass"></i>
+        <br />
+        Check-in
+      </button>
+    </div>
+    <div class="btn-group" role="group">
+      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
+        <i class="fas fa-star"></i>
+        <br />
+        Rewards
+      </button>
+    </div>
+    <div class="btn-group" role="group">
+      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
+        <i class="fas fa-book-reader"></i>
+        <br />
+        Learn More
+      </button>
+    </div>
+    <div class="btn-group" role="group">
+      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
+        <i class="fas fa-users"></i>
+        <br />
+        Teams
+      </button>
+    </div>
   </div>
 </div>
 
 @code
 {
+  private bool isLoggedIn = false;
+
   protected async override Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
     var sessionId = Guid.NewGuid().ToString();
     logger.LogDebug("OnInitializedAsync for new session {SessionId}", sessionId);
     localStorage.SetSessionId(sessionId);
+
+    var result = await Http.PostApiData<GetLoggedInUserResponse, MainLayout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetLoggedInUser", new GetLoggedInUserRequest());
+    isLoggedIn = result != null && !string.IsNullOrWhiteSpace(result.UserName);
   }
 }

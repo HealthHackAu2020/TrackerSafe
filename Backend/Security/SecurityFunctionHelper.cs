@@ -23,8 +23,8 @@ namespace TrackerSafe.Backend.Security
           log.LogInformation("AccessTokenStatus.Expired: returning UnauthorizedResult");
           throw new UnauthorizedUserException();
         case AccessTokenStatus.Error:
-          log.LogInformation("AccessTokenStatus.Error: throwing {ErrorMessage}", tokenRes.Exception.Message);
-          throw tokenRes.Exception;
+          log.LogWarning("AccessTokenStatus.Error: throwing {ErrorMessage}", tokenRes.Exception.Message);
+          throw new UnauthorizedUserException();
         default:
           throw new ApplicationException($"Unknown AccessTokenStatus: {tokenRes.Status}");
       }

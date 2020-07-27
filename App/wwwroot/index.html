@@ -16,6 +16,8 @@
   <script src="location.js" defer></script>
 
   <script src="push-notifications.js" defer></script>
+
+  <script src="https://kit.fontawesome.com/c673014d25.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -53,7 +55,14 @@
   </script>
   <!-- End Single Page Apps for GitHub Pages -->
   <script src="_framework/blazor.webassembly.js"></script>
-  <script>navigator.serviceWorker.register('service-worker.js');</script>
+  <script>
+    navigator.serviceWorker.register('service-worker.js').then(reg => {
+      setTimeout(() => {
+        console.log('Checking for updated service worker...');
+        reg.update();
+      }, 300000);
+  });
+  </script>
   
 </body>
 

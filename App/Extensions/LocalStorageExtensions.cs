@@ -33,7 +33,7 @@ namespace app.Extensions
       return localStorage.GetItem<string>("sid");
     }
 
-    public static void SetPushNotificationId(this Blazored.LocalStorage.ISyncLocalStorageService localStorage, Guid value)
+    public static void SetPushNotificationId(this Blazored.LocalStorage.ISyncLocalStorageService localStorage, Guid? value)
     {
       localStorage.SetItem("pid", value);
     }
