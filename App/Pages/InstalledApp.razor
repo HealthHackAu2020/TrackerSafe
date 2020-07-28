@@ -1,0 +1,17 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlInstalledApp)]
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject NavigationManager navManager
+@inject ILogger<InstalledApp> logger
+
+<LoadingButton></LoadingButton>
+
+@code 
+{
+  protected override Task OnInitializedAsync()
+  {
+    //We get sent here after the app is installed, purely to redirect and force a refresh
+    logger.LogInformation("OnInitializedAsync - redirecting...");
+    navManager.NavigateToPage(AppConstants.PageUrlHome, true);
+    return Task.CompletedTask;
+  }
+}

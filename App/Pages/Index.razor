@@ -30,7 +30,9 @@
       }
     </div>
     <div class="col">
-      <button class="btn btn-info" type="button" @onclick="NavigateToPushNotificationsTest">Test Push Notifications</button>
+      <div class="alert alert-light" role="alert">
+        <span class="badge badge-pill badge-info" ><a role="button" @onclick="NavigateToPushNotificationsTest" alt="Dismiss Warning"><i class="fas fa-bell"></i>&nbsp;Test Push Notifications</a></span>
+      </div>
     </div>
   </div>
   <div class="row justify-content-center">
@@ -53,12 +55,38 @@
       
     </div>
   </div>
+  <div class="row justify-content-center">
+    <div class="col">
+      <div class="alert alert-light text-right" role="alert">
+        Locally Installed App:
+      </div>
+    </div>
+    <div class="col">
+      @if (featureInstalledApp)
+      {
+        <FeatureEnabled></FeatureEnabled>
+      }
+      else
+      {
+        <FeatureDisabled></FeatureDisabled>
+      }
+    </div>
+    <div class="col">
+      @if (!featureInstalledApp)
+      {
+        <div class="alert alert-warning" role="alert">
+          We recommend doing this.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>
+        </div>
+      }
+    </div>
+  </div>
 </div>
 
 @code 
 {
   private bool featurePushNotificationsEnabled = false;
   private bool featureLocationEnabled = false;
+  private bool featureInstalledApp = false;
   protected override Task OnInitializedAsync()
   {
     var appState = localStorage.GetAppState();
@@ -69,6 +97,10 @@
     if (appState.LocationState == AppState.FeatureState.Configured)
     {
       featureLocationEnabled = true;
+    }
+    if (appState.InstalledState == AppState.FeatureState.Configured)
+    {
+      featureInstalledApp = true;
     }
     return Task.CompletedTask;
   }

@@ -68,6 +68,29 @@
         reg.update();
       }, 300000);
   });
+
+  (function () {
+    window.isAppInstalled = function () {
+      var res = window.matchMedia('(display-mode: standalone)').matches;
+      console.log('Detected if app was running: ' + res);
+      return res;
+    }
+
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('app installed, reloading');
+      var extraDirectory = "";
+      if (window.location.hostname.toLocaleLowerCase() != "localhost")
+      {
+        extraDirectory = "TrackerSafe/"
+      }
+      window.location = window.location.protocol + '//' + window.location.host + '/' + extraDirectory + 'installed-app';
+    });
+  })();
+
+  window.onerror = function(error) {
+    alert(error); // todo: log
+  };
+  
   </script>
   
 </body>

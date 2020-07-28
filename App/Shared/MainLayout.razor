@@ -3,6 +3,7 @@
 @inject NavigationManager navManager
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject ILogger<MainLayout> logger
+@inject IJSRuntime JSRuntime
 @* <div class="fixed-top justify-content-center bg-light">
   <p>&nbsp;<!--Top bar content will go here--></p>
 </div> *@
@@ -15,6 +16,12 @@
   }
   else
   {
+    @if (!isRunningInApp && !hasDismissedNotRunningInApp)
+    {
+      <div class="alert alert-warning row justify-content-center" role="alert">
+        You are running in a browser, not installed on your device.  For quicker access, install the application to your device.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>. <span class="badge badge-pill badge-danger" ><a role="button" @onclick="DismissInstallWarning" alt="Dismiss Warning"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
+      </div>
+    }
     <div class="content px-4">
       @Body
     </div>
@@ -62,8 +69,9 @@
 @code
 {
   private bool isLoggedIn = false;
-
   private bool isLoading = false;
+  private bool isRunningInApp = false;
+  private bool hasDismissedNotRunningInApp = false;
 
   protected async override Task OnInitializedAsync()
   {
@@ -73,7 +81,29 @@
     logger.LogDebug("OnInitializedAsync for new session {SessionId}", sessionId);
     localStorage.SetSessionId(sessionId);
 
+    isRunningInApp = await JSRuntime.InvokeAsync<bool>("isAppInstalled");
+
     var appState = localStorage.GetAppState();
+    if (isRunningInApp)
+    {
+      if (appState.InstalledState != AppState.FeatureState.Configured)
+      {
+        appState.InstalledState = AppState.FeatureState.Configured;
+        localStorage.SetAppState(appState);
+      }
+    }
+    else
+    {
+      if (appState.InstalledState == AppState.FeatureState.OptedOut)
+      {
+        hasDismissedNotRunningInApp = true;
+      }
+      else
+      {
+        appState.InstalledState = AppState.FeatureState.None;
+        localStorage.SetAppState(appState);
+      }
+    }
 
     var result = await Http.PostApiData<GetLoggedInUserResponse, MainLayout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetLoggedInUser", new GetLoggedInUserRequest());
     isLoggedIn = result != null && !string.IsNullOrWhiteSpace(result.UserName);
@@ -92,5 +122,16 @@
     }
 
     isLoading = false;
+  }
+
+  private void DismissInstallWarning(MouseEventArgs e)
+  {
+    var appState = localStorage.GetAppState();
+    if (appState.InstalledState != AppState.FeatureState.Configured)
+    {
+      appState.InstalledState = AppState.FeatureState.OptedOut;
+      localStorage.SetAppState(appState);
+      hasDismissedNotRunningInApp = true;
+    }
   }
 }
