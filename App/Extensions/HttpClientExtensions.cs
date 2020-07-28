@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -47,18 +48,20 @@ namespace app.Extensions
       {
         var sessionId = localStorage.GetSessionId();
         var jwt = localStorage.GetJwt();
+
         var authString = string.IsNullOrWhiteSpace(jwt) ? "" : $"Bearer {jwt}";
         
         var requestMessage = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri(url),
-            Headers = { 
-              { Constants.HttpHeaderSessionId, sessionId },
-              { HttpRequestHeader.Authorization.ToString(), authString }
-            },
             Content = new StringContent(JsonConvert.SerializeObject(requestPayload))
         };
+        requestMessage.Headers.Add(Constants.HttpHeaderSessionId, sessionId);
+        if (!string.IsNullOrWhiteSpace(jwt))
+        {
+          requestMessage.Headers.Add(HttpRequestHeader.Authorization.ToString(), authString);
+        }
         var remoteResults = await http.SendAsync(requestMessage);
         Helpers.ApiResponse.HandleUnsuccessfulApiResponse(navManager, logger, remoteResults);
         string resultString = await remoteResults.Content.ReadAsStringAsync();

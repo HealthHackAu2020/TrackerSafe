@@ -110,16 +110,20 @@
 
     logger.LogDebug("OnInitializedAsync isLoggedIn? {IsLoggedIn}; Push Notifications? {PushNotificationState}; ", isLoggedIn, appState.PushNotificationState);
 
-    if (appState.PushNotificationState == AppState.FeatureState.None)
+    if (isLoggedIn)
     {
-      logger.LogDebug("PushNotificationState is None, Redirecting");
-      navManager.NavigateToPage(AppConstants.PageUrlPushNotifications);
+      if (appState.PushNotificationState == AppState.FeatureState.None)
+      {
+        logger.LogDebug("PushNotificationState is None, Redirecting");
+        navManager.NavigateToPage(AppConstants.PageUrlPushNotifications);
+      }
+      else if (appState.LocationState == AppState.FeatureState.None)
+      {
+        logger.LogDebug("LocationState is None, Redirecting");
+        navManager.NavigateToPage(AppConstants.PageUrlGetLocation);
+      }
     }
-    else if (appState.LocationState == AppState.FeatureState.None)
-    {
-      logger.LogDebug("LocationState is None, Redirecting");
-      navManager.NavigateToPage(AppConstants.PageUrlGetLocation);
-    }
+
 
     isLoading = false;
   }
