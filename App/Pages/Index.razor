@@ -3,84 +3,83 @@
 @inject NavigationManager navManager
 @inject ILogger<Index> logger
 
-<div class="container-fluid">
-  <div class="row justify-content-center">
-    <h1 class="text-center top30 mt-5">Tracker Safe</h1>
-  </div>
-  <div class="row justify-content-center">
-    <h3 class="text-center">Help stop the spread of COVID-19 while staying completely anonymous.</h3>
-  </div>
-  <div class="row justify-content-center">
-    <h5>Your App Status:</h5>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col">
-      <div class="alert alert-light text-right" role="alert">
-        Web Push Notifications:
-      </div>
-    </div>
-    <div class="col">
-      @if (featurePushNotificationsEnabled)
-      {
-        <FeatureEnabled></FeatureEnabled>
-      }
-      else
-      {
-        <FeatureDisabled></FeatureDisabled>
-      }
-    </div>
-    <div class="col">
-      <div class="alert alert-light" role="alert">
-        <span class="badge badge-pill badge-info" ><a role="button" @onclick="NavigateToPushNotificationsTest" alt="Dismiss Warning"><i class="fas fa-bell"></i>&nbsp;Test Push Notifications</a></span>
-      </div>
+<div class="row justify-content-center">
+  <h1 class="text-center top30 mt-5">Tracker Safe</h1>
+</div>
+<div class="row justify-content-center">
+  <h3 class="text-center">Help stop the spread of COVID-19 while staying completely anonymous.</h3>
+</div>
+<div class="row justify-content-center">
+  <h5>Your App Status:</h5>
+</div>
+<div class="row justify-content-center">
+  <div class="col">
+    <div class="alert alert-light text-right" role="alert">
+      Web Push Notifications:
     </div>
   </div>
-  <div class="row justify-content-center">
-    <div class="col">
-      <div class="alert alert-light text-right" role="alert">
-        Location:
-      </div>
-    </div>
-    <div class="col">
-      @if (featureLocationEnabled)
-      {
-        <FeatureEnabled></FeatureEnabled>
-      }
-      else
-      {
-        <FeatureDisabled></FeatureDisabled>
-      }
-    </div>
-    <div class="col">
-      
-    </div>
+  <div class="col">
+    @if (featurePushNotificationsEnabled)
+    {
+      <FeatureEnabled></FeatureEnabled>
+    }
+    else
+    {
+      <FeatureDisabled></FeatureDisabled>
+    }
   </div>
-  <div class="row justify-content-center">
-    <div class="col">
-      <div class="alert alert-light text-right" role="alert">
-        Locally Installed App:
-      </div>
-    </div>
-    <div class="col">
-      @if (featureInstalledApp)
-      {
-        <FeatureEnabled></FeatureEnabled>
-      }
-      else
-      {
-        <FeatureDisabled></FeatureDisabled>
-      }
-    </div>
-    <div class="col">
-      @if (!featureInstalledApp)
-      {
-        <div class="alert alert-warning" role="alert">
-          We recommend doing this.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>
-        </div>
-      }
+  <div class="col">
+    <div class="alert alert-light" role="alert">
+      <span class="badge badge-pill badge-info" ><a role="button" @onclick="NavigateToPushNotificationsTest" alt="Dismiss Warning"><i class="fas fa-bell"></i>&nbsp;Test Push Notifications</a></span>
     </div>
   </div>
 </div>
+<div class="row justify-content-center">
+  <div class="col">
+    <div class="alert alert-light text-right" role="alert">
+      Location:
+    </div>
+  </div>
+  <div class="col">
+    @if (featureLocationEnabled)
+    {
+      <FeatureEnabled></FeatureEnabled>
+    }
+    else
+    {
+      <FeatureDisabled></FeatureDisabled>
+    }
+  </div>
+  <div class="col">
+    
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col">
+    <div class="alert alert-light text-right" role="alert">
+      Locally Installed App:
+    </div>
+  </div>
+  <div class="col">
+    @if (featureInstalledApp)
+    {
+      <FeatureEnabled></FeatureEnabled>
+    }
+    else
+    {
+      <FeatureDisabled></FeatureDisabled>
+    }
+  </div>
+  <div class="col">
+    @if (!featureInstalledApp)
+    {
+      <div class="alert alert-warning" role="alert">
+        We recommend doing this.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>
+      </div>
+    }
+  </div>
+</div>
+
 
 @code 
 {

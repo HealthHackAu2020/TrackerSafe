@@ -16,53 +16,59 @@
   }
   else
   {
-    <div class="row header no-gutters">
-      <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="submit">Share code with friends</button></div>   
-      <div class="col-6 no-margins text-right alert-icon"><i class="far fa-bell"></i></div> 
-    </div>
-    @if (!isRunningInApp && !hasDismissedNotRunningInApp)
+    @if (isLoggedIn)
     {
-      <div class="alert alert-warning row justify-content-center" role="alert">
-        You are running in a browser, not installed on your device.  For quicker access, install the application to your device.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>. <span class="badge badge-pill badge-danger" ><a role="button" @onclick="DismissInstallWarning" alt="Dismiss Warning"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
+      <div class="row header no-gutters">
+        <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="submit">Share code with friends</button></div>   
+        <div class="col-6 no-margins text-right alert-icon"><i class="far fa-bell"></i></div> 
       </div>
+      @if (!isRunningInApp && !hasDismissedNotRunningInApp)
+      {
+        <div class="alert alert-warning row justify-content-center" role="alert">
+          You are running in a browser, not installed on your device.  For quicker access, install the application to your device.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>. <span class="badge badge-pill badge-danger" ><a role="button" @onclick="DismissInstallWarning" alt="Dismiss Warning"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
+        </div>
+      }
     }
-    <div class="content px-4">
+    <div class="container-fluid">
       @Body
     </div>
   }
   
-  <nav class="navbar fixed-bottom navbar-light bg-light">
-    <a role="button" class="nav-item" @onclick="NavigateToMyProfile" >
-      <div class="text-center">
-        <i class="fas fa-user @menuCssClassProfile"></i>
-        <h6 class="@menuCssClassProfile">My Profile</h6>
-      </div>
-    </a>
-    <a role="button" class="nav-item" @onclick="NavigateToCheckin" >
-      <div class="nav-item text-center">
-        <i class="fas fa-compass"></i>
-        <h6>Check-in</h6>
-      </div>
-    </a>
-    <a role="button" class="nav-item" @onclick="NavigateToRewards" >
-      <div class="nav-item text-center">
-        <i class="fas fa-star"></i>
-        <h6>Rewards</h6>
-      </div>
-    </a>
-    <a role="button" class="nav-item" @onclick="NavigateToLearnMore" >
-      <div class="nav-item text-center">
-        <i class="fas fa-book"></i>
-        <h6>Learn More</h6>
-      </div>
-    </a>
-    <a role="button" class="nav-item" @onclick="NavigateToTeams" >
-      <div class="nav-item text-center">
-        <i class="fas fa-user-friends"></i>
-        <h6>Teams</h6>
-      </div>
-    </a>
-</nav>
+  @if (isLoggedIn)
+  {
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+      <a role="button" class="nav-item" @onclick="NavigateToMyProfile" >
+        <div class="text-center">
+          <i class="fas fa-user @menuCssClassProfile"></i>
+          <h6 class="@menuCssClassProfile">My Profile</h6>
+        </div>
+      </a>
+      <a role="button" class="nav-item" @onclick="NavigateToCheckin" >
+        <div class="nav-item text-center">
+          <i class="fas fa-compass"></i>
+          <h6>Check-in</h6>
+        </div>
+      </a>
+      <a role="button" class="nav-item" @onclick="NavigateToRewards" >
+        <div class="nav-item text-center">
+          <i class="fas fa-star"></i>
+          <h6>Rewards</h6>
+        </div>
+      </a>
+      <a role="button" class="nav-item" @onclick="NavigateToLearnMore" >
+        <div class="nav-item text-center">
+          <i class="fas fa-book"></i>
+          <h6>Learn More</h6>
+        </div>
+      </a>
+      <a role="button" class="nav-item" @onclick="NavigateToTeams" >
+        <div class="nav-item text-center">
+          <i class="fas fa-user-friends"></i>
+          <h6>Teams</h6>
+        </div>
+      </a>
+  </nav>
+}
 </div>
 
 @code

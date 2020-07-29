@@ -4,42 +4,42 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject ILogger<GetLocation> logger
 @inject LocationService locationService
-<div class="container-fluid">
-  <div class="row justify-content-center">
-    <h1 class="text-center top30 mt-5"><i class="fas fa-compass"></i> Provide access to your location data</h1>
-  </div>
-  <div class="row justify-content-center">
-    @if (isLoading)
+
+<div class="row justify-content-center">
+  <h1 class="text-center top30 mt-5"><i class="fas fa-compass"></i> Provide access to your location data</h1>
+</div>
+<div class="row justify-content-center">
+  @if (isLoading)
+  {
+    <LoadingButton></LoadingButton>
+  }
+  else
+  {
+    if (isFirstTime)
     {
-      <LoadingButton></LoadingButton>
+      <div class="row justify-content-center">
+        <h3>We will only use it to get your current location when checking in to a new place</h3>
+        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupLocation">Setup Location Access</button>
+      </div>
+    }
+    else if (isConfigured)
+    {
+      <div class="alert alert-success row justify-content-center" role="alert">
+        <Spinner></Spinner>You have successfully set up Location!
+      </div>
     }
     else
     {
-      if (isFirstTime)
-      {
-        <div class="row justify-content-center">
-          <h3>We will only use it to get your current location when checking in to a new place</h3>
-          <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupLocation">Setup Location Access</button>
-        </div>
-      }
-      else if (isConfigured)
-      {
-        <div class="alert alert-success row justify-content-center" role="alert">
-          <Spinner></Spinner>You have successfully set up Location!
-        </div>
-      }
-      else
-      {
-        <div class="alert alert-danger row justify-content-center" role="alert">
-          You have not enalbed location on this device.  If your device prompted you and you did not allow it, please find instructions on how to retry for different browsers <a href="https://docs.buddypunch.com/en/articles/919258-how-to-enable-location-services-for-chrome-safari-and-android-ios-devices-gps-setting" target="_blank" alt="instructions for notifications"> here <i class="fas fa-external-link-alt"></i></a>.
-        </div>
-        <div class="row justify-content-center">
-          <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupLocation">Try Again</button>
-        </div>
-      }
+      <div class="alert alert-danger row justify-content-center" role="alert">
+        You have not enalbed location on this device.  If your device prompted you and you did not allow it, please find instructions on how to retry for different browsers <a href="https://docs.buddypunch.com/en/articles/919258-how-to-enable-location-services-for-chrome-safari-and-android-ios-devices-gps-setting" target="_blank" alt="instructions for notifications"> here <i class="fas fa-external-link-alt"></i></a>.
+      </div>
+      <div class="row justify-content-center">
+        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupLocation">Try Again</button>
+      </div>
     }
-  </div>
+  }
 </div>
+
 
 
 @code 

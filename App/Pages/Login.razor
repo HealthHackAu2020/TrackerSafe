@@ -3,9 +3,7 @@
 @inject NavigationManager navManager
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject ILogger<Login> logger
-<div class="col">
-  <h1 class="text-center top30 mt-5">Log In</h1>
-</div>
+<NotLoggedInHeader Title="Log In"></NotLoggedInHeader>
 <div class="row justify-content-center pt-3">
   <form>
     <div class="form-group">
@@ -38,7 +36,7 @@
           }
           else
           {
-            <button class="btn btn-primary btn-block mt-5" type="button" @onclick="InitiateLogin">Log In</button>
+            <button class="btn btn-primary btn-block mt-5" type="submit" @onclick="InitiateLogin">Log In</button>
           }
         </div>
       </div>
@@ -62,6 +60,7 @@
     isSuccessful = result.Successful;
     message = result.Message;
     localStorage.SetJwt(result.Jwt);
+    localStorage.SetUserName(result.UserName);
     isLoading = false;
     StateHasChanged();
     await Task.Delay(3000);

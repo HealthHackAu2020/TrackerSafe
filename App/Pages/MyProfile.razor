@@ -3,81 +3,81 @@
 @inject NavigationManager navManager
 @inject ILogger<MyProfile> logger
 
-<div class="container-fluid">
-  <div class="row alert alert-card alert-dismissible alert-success">
-    <div class="col-12">
-      <div class="avatar">
-        <img src="img/profile-avatar.jpg">
+
+<div class="row alert alert-card alert-dismissible alert-success">
+  <div class="col-12">
+    <div class="avatar">
+      <img src="img/profile-avatar.jpg">
+    </div>
+    <h2>@userName</h2>
+    <h6>27 days clean</h6> 
+  </div>
+</div>
+<div class="row info-card no-gutters">
+  <div class="col-12">
+    <h2>42 Day Challenge</h2>
+      <div class="bs-component">
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="text-center" style="margin-top: 1.25rem;"><p>You have 32 days to go!</p></div>
       </div>
-      <h2>mrSmith93</h2>
-      <h6>27 days clean</h6> 
-    </div>
   </div>
-  <div class="row info-card no-gutters">
-    <div class="col-12">
-      <h2>42 Day Challenge</h2>
-          <div class="bs-component">
-            <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div class="text-center" style="margin-top: 1.25rem;"><p>You have 32 days to go!</p></div>
-          </div>
-    </div>
+</div>
+<div class="row info-card no-gutters">
+  <div class="col-12">
+    <h2>My team</h2>
+      <img src="img/map-team.jpg" class="img-fluid" style="margin-bottom: 2rem;">
   </div>
-  <div class="row info-card no-gutters">
-    <div class="col-12">
-      <h2>My team</h2>
-        <img src="img/map-team.jpg" class="img-fluid" style="margin-bottom: 2rem;">
-    </div>
-    <div class="col-12">
-      <h3>Engativa</h3>
-      <p>1350 users</p>
-      <h3>Current Restrictions</h3>
-      <p>Retail businesses open with social distancing. Restaurants open for delivery only. Gatherings of 10 people are allowed</p>
-      <button class="btn btn-primary btn-block" type="submit">Learn more about restrictions</button>
-    </div>
+  <div class="col-12">
+    <h3>Engativa</h3>
+    <p>1350 users</p>
+    <h3>Current Restrictions</h3>
+    <p>Retail businesses open with social distancing. Restaurants open for delivery only. Gatherings of 10 people are allowed</p>
+    <button class="btn btn-primary btn-block" type="submit">Learn more about restrictions</button>
   </div>
-  <div class="row info-card  no-gutters rewards-card">
-    <div class="col-12">
-      <h2>Points collected</h2>
-    </div>
-    <div class="col-12">
-      <div class="rewards-total">
-        <h1 style="margin-bottom: 0;">370</h1>
-        <h6>total points</h6>
-      </div>
-      <p>Remember to invite friends to join the app to collect points for rewards</p>
-    </div>
-    <div class="col-12">
-      <button class="btn btn-primary btn-block" type="submit">Share code with friends</button>
-    </div>
+</div>
+<div class="row info-card  no-gutters rewards-card">
+  <div class="col-12">
+    <h2>Points collected</h2>
   </div>
-  <div class="row btn-card no-gutters">
-    <div class="col-2 text-center">
-      <p><h2><i class="fas fa-thermometer-half"></i></h2></p>
+  <div class="col-12">
+    <div class="rewards-total">
+      <h1 style="margin-bottom: 0;">370</h1>
+      <h6>total points</h6>
     </div>
-    <div class="col-10">
-      <h4>Symptom checker</h4>
-    </div>
+    <p>Remember to invite friends to join the app to collect points for rewards</p>
   </div>
-  <div class="row btn-card  no-gutters" style="margin-bottom: 55px;">
-    <div class="col-2 text-center">
-      <p>
-        <h2><i class="fas fa-cogs"></i></h2>
-      </p>
-    </div>
-    <div class="col-10">
-      <h4>My settings</h4>
-    </div>
+  <div class="col-12">
+    <button class="btn btn-primary btn-block" type="submit">Share code with friends</button>
+  </div>
+</div>
+<div class="row btn-card no-gutters">
+  <div class="col-2 text-center">
+    <p><h2><i class="fas fa-thermometer-half"></i></h2></p>
+  </div>
+  <div class="col-10">
+    <h4>Symptom checker</h4>
+  </div>
+</div>
+<div class="row btn-card  no-gutters" style="margin-bottom: 55px;">
+  <div class="col-2 text-center">
+    <p>
+      <h2><i class="fas fa-cogs"></i></h2>
+    </p>
+  </div>
+  <div class="col-10">
+    <h4>My settings</h4>
   </div>
 </div>
 
+
 @code 
 {
-  
+  private string userName = "";
   protected override Task OnInitializedAsync()
   {
-    
+    userName = localStorage.GetUserName();
     return Task.CompletedTask;
   }
  

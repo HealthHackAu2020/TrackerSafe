@@ -58,5 +58,14 @@ namespace app.Extensions
       }
       return appState;
     }
+
+    public static void SetUserName(this Blazored.LocalStorage.ISyncLocalStorageService localStorage, string value)
+    {
+      localStorage.SetItem("usr", value);
+    }
+    public static string GetUserName(this Blazored.LocalStorage.ISyncLocalStorageService localStorage)
+    {
+      return localStorage.GetItem<string>("usr");
+    }
   }
 }

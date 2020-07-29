@@ -2,7 +2,7 @@
 @inject HttpClient Http
 @inject NavigationManager navManager
 @inject ILogger<UnexpectedError> logger
-
+<NotLoggedInHeader Title="Error :("></NotLoggedInHeader>
 <h3>An Unexpected Error has Occurred.</h3>
 <button class="btn btn-primary btn-block mt-5" type="button" @onclick="RedirectToLogin">Try and re-launch to see if it fixes the issue</button>
 @code {
