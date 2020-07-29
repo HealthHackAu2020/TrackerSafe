@@ -71,6 +71,7 @@
     message = result.Message;
     localStorage.SetJwt(result.Jwt);
     localStorage.SetUserName(result.UserName);
+    localStorage.SetReferralCode(result.ReferralCode);
     isLoading = false;
     StateHasChanged();
     await Task.Delay(3000);

@@ -42,6 +42,7 @@ namespace TrackerSafe.Backend.Functions
       var successful = false;
       var message  = "";
       var jwt = "";
+      var referralCode = "";
 
       if (string.IsNullOrWhiteSpace(data.UserName))
       {
@@ -74,11 +75,12 @@ namespace TrackerSafe.Backend.Functions
             jwt = _accessTokenProvider.GenerateToken(user.Id, user.UserNameDisplay);
             successful = true;
           }
+          referralCode = user.MyReferralCode;
         }
       }
 
       log.LogInformation("Result for '{UserName}' successful: {Successful}, message: {Message}", data.UserName, successful, message);
-      return new OkObjectResult(new LogInUserResponse(data.UserName, successful, message, jwt));
+      return new OkObjectResult(new LogInUserResponse(data.UserName, successful, message, jwt, referralCode));
     }
 
     public int GenerateRandomNumber(int min, int max)  

@@ -9,6 +9,7 @@ namespace TrackerSafe.Shared
     public FeatureState PushNotificationState { get; set; }
     public FeatureState LocationState { get; set; }
     public FeatureState InstalledState { get; set; }
+    public bool HasSeenReferralCode { get; set; }
 
     public enum FeatureState
     {

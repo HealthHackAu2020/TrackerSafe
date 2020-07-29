@@ -19,6 +19,8 @@
     {
       <pre>Waiting for notifications...</pre>
       <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SendTestNotification">Send Test Notification</button>
+      <p>If you test it, and it worked, let us know!</p>
+      <button class="btn btn-primary btn-block mt-5" type="button" @onclick="MarkNotificationWorking">My Notification Worked!</button>
     }
     else
     {
@@ -53,10 +55,18 @@
     {
       logger.LogInformation("RequestNotificationSubscriptionAsync - got subscription!");
       await SubscribeToNotifications(subscription);
+
+      var appState = localStorage.GetAppState();
+      appState.PushNotificationState = AppState.FeatureState.Configured;
+      localStorage.SetAppState(appState);
     }
     else
     {
       logger.LogInformation("RequestNotificationSubscriptionAsync - failed to get subscription!");
+
+      var appState = localStorage.GetAppState();
+      appState.PushNotificationState = AppState.FeatureState.OptedOut;
+      localStorage.SetAppState(appState);
     }
   }
 
@@ -67,7 +77,6 @@
     var request = new CreatePushSubscriptionRequest(deviceId, subscription.Url, subscription.P256dh, subscription.Auth);
     var result = await Http.PostApiData<CreatePushSubscriptionResponse, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/CreatePushSubscription", request);
     localStorage.SetPushNotificationId(result.PushSubscriptionId);
-    pushSubscriptionId = result.PushSubscriptionId;
   }
 
   private async void SendTestNotification(MouseEventArgs e)
@@ -77,6 +86,19 @@
     logger.LogDebug($"SendTestNotification");
     var result = await Http.PostApiData<string, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/SendPushNotificationToSelf", "Testing push to self!");
     logger.LogDebug($"SendTestNotification got result: {result}");
+    isLoading = false;
+    StateHasChanged();
+  }
+
+  private void MarkNotificationWorking(MouseEventArgs e)
+  {
+    isLoading = true;
+    StateHasChanged();
+    logger.LogDebug($"MarkNotificationWorking");
+    var appState = localStorage.GetAppState();
+    appState.PushNotificationState = AppState.FeatureState.Configured;
+    localStorage.SetAppState(appState);
+    navManager.NavigateToPage(AppConstants.PageUrlHome, true);
     isLoading = false;
     StateHasChanged();
   }

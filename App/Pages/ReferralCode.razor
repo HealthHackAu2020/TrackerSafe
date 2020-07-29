@@ -1,0 +1,45 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlReferralCode)]
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject NavigationManager navManager
+@inject ILogger<ReferralCode> logger
+<h1 class="text-center top30 mt-2">Referral Code</h1>
+<div class="row justify-content-center pt-3">
+  <div class="col-9 text-center">
+    <p>
+      Use this code to invite your friends and get reward points.
+    </p>
+    <div class="share-code-box">
+      <h2>@referralCode</h2>
+    </div>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-6">
+    @if (!hasFinishedSignup)
+    {
+      <button class="btn btn-primary btn-block mt-5" type="submit" @onclick="FinishSignUp">Finish sign up</button>
+    }
+  </div>
+</div>
+
+@code 
+{
+  private string referralCode = "";
+  private bool hasFinishedSignup = false;
+  protected override Task OnInitializedAsync()
+  {
+    referralCode = localStorage.GetReferralCode();
+    var appState = localStorage.GetAppState();
+    hasFinishedSignup = appState.HasSeenReferralCode;
+    return Task.CompletedTask;
+  }
+
+  private void FinishSignUp(MouseEventArgs e)
+  {
+    logger.LogDebug($"FinishSignUp");
+    var appState = localStorage.GetAppState();
+    appState.HasSeenReferralCode = true;
+    localStorage.SetAppState(appState);
+    navManager.NavigateToPage(AppConstants.PageUrlHome, true);
+  }
+}

@@ -19,7 +19,7 @@
     @if (isLoggedIn)
     {
       <div class="row header no-gutters">
-        <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="submit">Share code with friends</button></div>   
+        <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="button" @onclick="NavigateToReferralCode">Share code with friends</button></div>   
         <div class="col-6 no-margins text-right alert-icon"><i class="far fa-bell"></i></div> 
       </div>
       @if (!isRunningInApp && !hasDismissedNotRunningInApp)
@@ -131,6 +131,11 @@
         logger.LogDebug("LocationState is None, Redirecting");
         navManager.NavigateToPage(AppConstants.PageUrlGetLocation);
       }
+      else if (!appState.HasSeenReferralCode)
+      {
+        logger.LogDebug("Has not seen referral code, Redirecting");
+        navManager.NavigateToPage(AppConstants.PageUrlReferralCode);
+      }
     }
 
     SetMenuCss(navManager.Uri);
@@ -160,6 +165,12 @@
     {
       menuCssClassProfile = "active";
     }
+  }
+
+  private void NavigateToReferralCode(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToReferralCode");
+    navManager.NavigateToPage(AppConstants.PageUrlReferralCode);
   }
 
   private void NavigateToMyProfile(MouseEventArgs e)

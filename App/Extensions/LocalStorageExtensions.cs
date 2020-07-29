@@ -67,5 +67,14 @@ namespace app.Extensions
     {
       return localStorage.GetItem<string>("usr");
     }
+
+    public static void SetReferralCode(this Blazored.LocalStorage.ISyncLocalStorageService localStorage, string value)
+    {
+      localStorage.SetItem("ref", value);
+    }
+    public static string GetReferralCode(this Blazored.LocalStorage.ISyncLocalStorageService localStorage)
+    {
+      return localStorage.GetItem<string>("ref");
+    }
   }
 }

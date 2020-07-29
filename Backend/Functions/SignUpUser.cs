@@ -43,6 +43,7 @@ namespace TrackerSafe.Backend.Functions
       var successful = false;
       var message  = "";
       var jwt = "";
+      var referralCode = "";
 
       if (string.IsNullOrWhiteSpace(data.UserName))
       {
@@ -76,24 +77,25 @@ namespace TrackerSafe.Backend.Functions
         var foundUnique = false;
         while (!foundUnique)
         {
-          var referralCode = GenerateRandomNumber(100000, 999999).ToString();
-          var existing = await _userDataStore.GetByReferralCodeAsync(referralCode);
+          var trialReferralCode = GenerateRandomNumber(100000, 999999).ToString();
+          var existing = await _userDataStore.GetByReferralCodeAsync(trialReferralCode);
           if (existing == null)
           {
             log.LogInformation("Found unique referral code '{ReferralCode}' for user id '{UserId}' with name '{UserName}'", referralCode, createdUser.Id, createdUser.UserNameDisplay);
             foundUnique = true;
-            createdUser.MyReferralCode = referralCode;
+            createdUser.MyReferralCode = trialReferralCode;
             await _userDataStore.UpdateAsync(createdUser.Id, createdUser);
           }
         }
 
         jwt = _accessTokenProvider.GenerateToken(createdUser.Id, createdUser.UserNameDisplay);
+        referralCode = createdUser.MyReferralCode;
 
         successful = true;
       }
 
       log.LogInformation("Result for '{UserName}' successful: {Successful}, message: {Message}", data.UserName, successful, message);
-      return new OkObjectResult(new SignUpUserResponse(data.UserName, successful, message, jwt));
+      return new OkObjectResult(new SignUpUserResponse(data.UserName, successful, message, jwt, referralCode));
     }
 
     public int GenerateRandomNumber(int min, int max)  
