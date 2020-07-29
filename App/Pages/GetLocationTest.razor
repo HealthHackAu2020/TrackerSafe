@@ -1,0 +1,88 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlGetLocationTest)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<GetLocationTest> logger
+@inject LocationService locationService
+
+<div class="row justify-content-center">
+  <h1 class="text-center top30 mt-5"><i class="fas fa-compass"></i> Test access to your location data</h1>
+</div>
+@if (isLoading)
+{
+  <LoadingButton></LoadingButton>
+}
+else
+{
+  if (isConfigured)
+  {
+    <div class="alert alert-success row justify-content-center" role="alert">
+      You have successfully set up Location!
+    </div>
+    <GoogleMap @ref="@map" Id="map" Options="@mapOptions"></GoogleMap>
+  }
+  else
+  {
+    <div class="alert alert-danger row justify-content-center" role="alert">
+      You have not enalbed location on this device.  If your device prompted you and you did not allow it, please find instructions on how to retry for different browsers <a href="https://docs.buddypunch.com/en/articles/919258-how-to-enable-location-services-for-chrome-safari-and-android-ios-devices-gps-setting" target="_blank" alt="instructions for notifications"> here <i class="fas fa-external-link-alt"></i></a>.
+    </div>
+    <div class="row justify-content-center">
+      <button class="btn btn-primary btn-block mt-5" type="button" @onclick="SetupLocation">Try Again</button>
+    </div>
+  }
+}
+
+
+@code 
+{
+  private bool isLoading = false;
+  private bool isConfigured = false;
+  private Location location;
+  private GoogleMap map;
+	private MapOptions mapOptions;	
+  
+  protected override async Task OnInitializedAsync()
+  {
+    await GetLocationAndSetMap();
+  }
+
+  private async void SetupLocation(MouseEventArgs e)
+  {
+    await GetLocationAndSetMap();
+  }
+
+
+  private async Task GetLocationAndSetMap()
+  {
+    isLoading = true;
+    var appState = localStorage.GetAppState();
+
+    location = await locationService.GetLocationAsync();
+    if (location != null)
+    {
+      appState.LocationState = AppState.FeatureState.Configured;
+      isConfigured = true;
+
+      mapOptions = new MapOptions()
+      {
+        Zoom = 13,
+        Center = new LatLngLiteral()
+        {
+          Lat = Convert.ToDouble(location.Latitude),
+          Lng = Convert.ToDouble(location.Longitude)
+        },
+        MapTypeId = MapTypeId.Roadmap
+      };
+    }
+    else
+    {
+      appState.LocationState = AppState.FeatureState.OptedOut;
+    }
+    localStorage.SetAppState(appState);
+
+    isLoading = false;
+    StateHasChanged();
+  }
+
+
+}

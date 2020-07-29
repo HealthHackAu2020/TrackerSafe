@@ -7,6 +7,7 @@ namespace TrackerSafe.App
     public const string PageUrlLogin = "/login";
     public const string PageUrlLogout = "/logout";
     public const string PageUrlGetLocation = "/get-location";
+    public const string PageUrlGetLocationTest = "/get-location-test";
     public const string PageUrlPushNotifications = "/push-notifications";
     public const string PageUrlPushNotificationsTest = "/push-notifications-test";
     public const string PageUrlInstalledApp = "/installed-app";

@@ -30,7 +30,7 @@
   </div>
   <div class="col">
     <div class="alert alert-light" role="alert">
-      <span class="badge badge-pill badge-info" ><a role="button" @onclick="NavigateToPushNotificationsTest" alt="Dismiss Warning"><i class="fas fa-bell"></i>&nbsp;Test Push Notifications</a></span>
+      <span class="badge badge-pill badge-info" ><a role="button" @onclick="NavigateToPushNotificationsTest" alt="Test Push Notifications"><i class="fas fa-bell"></i>&nbsp;Test Push Notifications</a></span>
     </div>
   </div>
 </div>
@@ -51,7 +51,9 @@
     }
   </div>
   <div class="col">
-    
+    <div class="alert alert-light" role="alert">
+      <span class="badge badge-pill badge-info" ><a role="button" @onclick="NavigateToGetLocationTest" alt="Test Location"><i class="fas fa-bell"></i>&nbsp;Test Location</a></span>
+    </div>
   </div>
 </div>
 <div class="row justify-content-center">
@@ -105,9 +107,16 @@
     }
     return Task.CompletedTask;
   }
+
   private void NavigateToPushNotificationsTest(MouseEventArgs e)
   {
     logger.LogDebug("NavigateToPushNotificationsTest");
     navManager.NavigateToPage(AppConstants.PageUrlPushNotificationsTest);
+  }
+
+  private void NavigateToGetLocationTest(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToGetLocationTest");
+    navManager.NavigateToPage(AppConstants.PageUrlGetLocationTest);
   }
 }
