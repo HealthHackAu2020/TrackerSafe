@@ -16,6 +16,10 @@
   }
   else
   {
+    <div class="row header no-gutters">
+      <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="submit">Share code with friends</button></div>   
+      <div class="col-6 no-margins text-right alert-icon"><i class="far fa-bell"></i></div> 
+    </div>
     @if (!isRunningInApp && !hasDismissedNotRunningInApp)
     {
       <div class="alert alert-warning row justify-content-center" role="alert">
@@ -27,43 +31,38 @@
     </div>
   }
   
-  <div class="fixed-bottom justify-content-center bg-light bottom-bar">
-    <div class="btn-group" role="group">
-      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
-        <i class="fas fa-user"></i>
-        <br />
-        My Profile
-      </button>
-    </div>
-    <div class="btn-group" role="group">
-      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
+  <nav class="navbar fixed-bottom navbar-light bg-light">
+    <a role="button" class="nav-item" @onclick="NavigateToMyProfile" >
+      <div class="text-center">
+        <i class="fas fa-user @menuCssClassProfile"></i>
+        <h6 class="@menuCssClassProfile">My Profile</h6>
+      </div>
+    </a>
+    <a role="button" class="nav-item" @onclick="NavigateToCheckin" >
+      <div class="nav-item text-center">
         <i class="fas fa-compass"></i>
-        <br />
-        Check-in
-      </button>
-    </div>
-    <div class="btn-group" role="group">
-      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
+        <h6>Check-in</h6>
+      </div>
+    </a>
+    <a role="button" class="nav-item" @onclick="NavigateToRewards" >
+      <div class="nav-item text-center">
         <i class="fas fa-star"></i>
-        <br />
-        Rewards
-      </button>
-    </div>
-    <div class="btn-group" role="group">
-      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
-        <i class="fas fa-book-reader"></i>
-        <br />
-        Learn More
-      </button>
-    </div>
-    <div class="btn-group" role="group">
-      <button class="btn btn-secondary" type="button" disabled="@(!isLoggedIn)">
-        <i class="fas fa-users"></i>
-        <br />
-        Teams
-      </button>
-    </div>
-  </div>
+        <h6>Rewards</h6>
+      </div>
+    </a>
+    <a role="button" class="nav-item" @onclick="NavigateToLearnMore" >
+      <div class="nav-item text-center">
+        <i class="fas fa-book"></i>
+        <h6>Learn More</h6>
+      </div>
+    </a>
+    <a role="button" class="nav-item" @onclick="NavigateToTeams" >
+      <div class="nav-item text-center">
+        <i class="fas fa-user-friends"></i>
+        <h6>Teams</h6>
+      </div>
+    </a>
+</nav>
 </div>
 
 @code
@@ -73,9 +72,13 @@
   private bool isRunningInApp = false;
   private bool hasDismissedNotRunningInApp = false;
 
+  private string menuCssClassProfile = "";
+
   protected async override Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
+    navManager.LocationChanged += HandleLocationChanged;
+
     isLoading = true;
     var sessionId = Guid.NewGuid().ToString();
     logger.LogDebug("OnInitializedAsync for new session {SessionId}", sessionId);
@@ -124,6 +127,7 @@
       }
     }
 
+    SetMenuCss(navManager.Uri);
 
     isLoading = false;
   }
@@ -137,5 +141,46 @@
       localStorage.SetAppState(appState);
       hasDismissedNotRunningInApp = true;
     }
+  }
+
+  private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+  {
+    SetMenuCss(e.Location);
+  }
+
+  private void SetMenuCss(string url)
+  {
+    if (url.ToLower().Contains(AppConstants.PageUrlMyProfile))
+    {
+      menuCssClassProfile = "active";
+    }
+  }
+
+  private void NavigateToMyProfile(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToMyProfile");
+    navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+  }
+
+  private void NavigateToCheckin(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToCheckin");
+    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+  }
+
+  private void NavigateToRewards(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToRewards");
+    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+  }
+  private void NavigateToLearnMore(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToLearnMore");
+    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+  }
+  private void NavigateToTeams(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToTeams");
+    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
   }
 }

@@ -1,17 +1,47 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿/*@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');*/
 
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+html, body, p, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+}
+
+p {
+    color: #334A52;
 }
 
 a, .btn-link {
     color: #0366d6;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+h1, h2 {
+    font-weight: 900;
+    margin-bottom: 1rem;
+    color: #000;
+}
+
+h3, h4, h5, h6 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #000;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+h2 {
+    font-size: 2rem;
+}
+h3 {
+    font-size: 1.5rem;
+}
+h4 {
+    font-size: 1.25rem;
+}
+h5 {
+    font-size: 1rem;
+}
+h6 {
+    font-size: 0.75rem;
 }
 
 app {
@@ -28,7 +58,6 @@ app {
 
 .main {
     flex: 1;
-    margin-bottom: 10rem;
 }
 
     .main .top-row {
@@ -189,3 +218,178 @@ app {
     padding-top: 0.5rem !important;
     padding-bottom: 0.5rem !important;
 }
+
+.header {
+    background-color: #00A9C9;
+    padding: 0.5rem 1rem;
+}
+
+.no-margins {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.no-paddings {
+
+}
+
+.btn {
+    font-family: 'Lato', sans-serif;
+}
+
+.btn-primary {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: #00A9C9;
+    border-radius: 2rem; 
+    color: #FFF;
+    border: 1px solid #FFF;
+}
+
+.btn-primary:hover {
+    background-color: #00A9C9;
+    border: 1px solid #FFF;
+}
+
+.alert-icon {
+    color: #FFF;
+    font-size: 2rem;
+    font-size: 1.4rem;
+    line-height: 0;
+    margin-top: 5px;
+}
+
+.card {
+    margin: 1rem;
+}
+
+.alert-success {
+    background-color: #75bb3f;
+}
+
+.alert-yellow {
+    background-color: #eba611;
+}
+
+.alert-red {
+    background-color: #bb0707;
+}
+
+.alert-card {
+    margin: 1rem;
+    padding: 1rem 0;
+    border-radius: 1rem;
+}
+
+.alert-card h2, .alert-card h6 {
+    color: #FFF;
+}
+
+.alert-card h2 {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.avatar {
+    float: left;
+    margin-right: 1rem;
+}
+
+.avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 60px;
+    border: 5px solid #FFF;
+}
+
+.info-card {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid #dcd5d0;
+}
+
+.btn-card {
+    background-color: #ebf0f2;
+    padding: 0.05rem 1rem;
+    border-bottom: 1px solid #dcd5d0;
+}
+
+.btn-card h2 {
+    margin: 0;
+    color: #00A9C9;
+}
+
+.btn-card h4 {
+    margin-top: 1.25rem;
+    margin-left: 1rem;
+}
+
+.progress-bar {
+    background-color: #75bb3f;
+}
+
+.rewards-card h1, .rewards-card h6   {
+    color: #75bb3f;
+}
+
+.rewards-total {
+    width: 100px;
+    height: 100px;
+    padding: 1rem;
+    float: left;
+    margin-right: 1rem;
+    background-image: url("img/rewards-bg.jpg");
+}
+
+.navbar {
+    padding: 0;
+}
+
+.navbar h6 {
+    margin-bottom: 0;
+    font-weight: 300;
+}
+
+.navbar i {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+}
+
+a.nav-item {
+    width: 20%;
+    margin: 0.5rem 0;
+    color: #334A52;
+}
+
+a.nav-item:hover {
+    text-decoration: none;
+}
+
+.active {
+    color: #00A9C9;
+}
+
+.btn-reversed,.btn-reversed:hover {
+    background-color: transparent;
+    border: 1px solid #FFF;
+    border-radius: 2rem;
+    color: #FFF;
+}
+
+.bg-maincolour {
+    background-color: #00A9C9;
+}
+.bg-maincolour h1, .bg-maincolour h2, .bg-maincolour h3, .bg-maincolour h4, .bg-maincolour h5, .bg-maincolour h6, .bg-maincolour label, .bg-maincolour p  {
+    color: #FFF;
+}
+.share-code-box {
+    border: 1px dashed #dcd5d0;
+    border-radius: 1rem;
+    background-color: #f4f3f2;
+}
+
+.share-code-box h2 {
+    margin: 0;
+    padding: 1rem 0;
+}
+
