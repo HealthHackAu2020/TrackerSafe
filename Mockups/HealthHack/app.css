@@ -282,7 +282,7 @@ app {
     border-radius: 1rem;
 }
 
-.alert-card h2, .alert-card h6 {
+.alert-card h2, .alert-card h5, .alert-card h6 {
     color: #FFF;
 }
 
@@ -330,6 +330,13 @@ app {
 
 .rewards-card h1, .rewards-card h6   {
     color: #75bb3f;
+}
+
+.rewardsdetails-card {
+    background-color: #ebf0f2;
+    margin: 1rem;
+    padding: 1rem 0;
+    border-radius: 1rem;
 }
 
 .rewards-total {
@@ -392,4 +399,57 @@ a.nav-item:hover {
     margin: 0;
     padding: 1rem 0;
 }
+.tab-menu {
+    margin: 1rem;  
+}
+.tab-menu a {
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 700; 
+    color: #000;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #dcd5d0;
+    display: block;
+    line-height: 1.25rem;
+}
+
+.tab-menu a.active { 
+    color: #00A9C9;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #00A9C9;
+}
+
+.business-card {
+    margin: 1rem;
+    border-bottom: 1px solid #dcd5d0;
+}
+
+.point-box {
+    border: 1px dashed #dcd5d0;
+    border-radius: 0.25rem;
+    background-color: #f4f3f2;
+    width: 70px;
+    height: 70px;
+    padding: 0.5rem;
+}
+
+.businness-img img {
+    width: 70px;
+    height: 70px;
+}
+
+.businness-details h4 {
+    margin-bottom: 0;
+}
+
+.point-box h2, .point-box h6 {
+    margin: 0;
+}
+
+.white-card {
+    margin: 1rem;
+}
+
+
+
 

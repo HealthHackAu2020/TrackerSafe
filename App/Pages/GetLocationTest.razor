@@ -51,7 +51,6 @@ else
     await GetLocationAndSetMap();
   }
 
-
   private async Task GetLocationAndSetMap()
   {
     isLoading = true;
@@ -65,7 +64,7 @@ else
 
       mapOptions = new MapOptions()
       {
-        Zoom = 13,
+        Zoom = 18,
         Center = new LatLngLiteral()
         {
           Lat = Convert.ToDouble(location.Latitude),
