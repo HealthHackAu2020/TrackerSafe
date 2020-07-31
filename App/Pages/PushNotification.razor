@@ -54,6 +54,7 @@ else
     {
       isFirstTime = true;
     }
+    isLoading = false;
   }
 
   private async void SetupNotifications(MouseEventArgs e)
@@ -74,6 +75,7 @@ else
       localStorage.SetSuccessMessage("You have successfully set up Web Push Notifications!");
       navManager.NavigateToPage(AppConstants.PageUrlHomeLoggedIn, true);
     }
+    isLoading = false;
   }
 
   public async Task RequestNotificationSubscriptionAsync()

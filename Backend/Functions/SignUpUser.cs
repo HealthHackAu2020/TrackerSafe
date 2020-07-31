@@ -66,7 +66,7 @@ namespace TrackerSafe.Backend.Functions
         var user = new User();
         user.UserNameLower = data.UserName?.Trim()?.ToLower();
         user.UserNameDisplay = data.UserName?.Trim();
-        user.SuppliedReferralCode = data.ReferralCode.Trim();
+        user.SuppliedReferralCode = data.ReferralCode?.Trim();
         var pwHasher = new PasswordHasher<User>();
         user.PwHash = pwHasher.HashPassword(user, data.Password);
         var createdUser = await _userDataStore.CreateAsync(user);
