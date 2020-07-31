@@ -3,6 +3,7 @@ namespace TrackerSafe.App
   public static class AppConstants
   {
     public const string PageUrlHome = "/";
+    public const string PageUrlHomeLoggedIn = "/settings";
     public const string PageUrlSignUp = "/signup";
     public const string PageUrlLogin = "/login";
     public const string PageUrlLogout = "/logout";

@@ -98,7 +98,7 @@
     var appState = localStorage.GetAppState();
     appState.PushNotificationState = AppState.FeatureState.Configured;
     localStorage.SetAppState(appState);
-    navManager.NavigateToPage(AppConstants.PageUrlHome, true);
+    navManager.NavigateToPage(AppConstants.PageUrlHomeLoggedIn, true);
     isLoading = false;
     StateHasChanged();
   }

@@ -34,7 +34,7 @@
     </div>
   }
   
-  @if (isLoggedIn)
+  @if (isLoggedIn && isOnBoarded)
   {
     <nav class="navbar fixed-bottom navbar-light bg-light">
       <a role="button" class="nav-item" @onclick="NavigateToMyProfile" >
@@ -74,6 +74,7 @@
 @code
 {
   private bool isLoggedIn = false;
+  private bool isOnBoarded = true;
   private bool isLoading = false;
   private bool isRunningInApp = false;
   private bool hasDismissedNotRunningInApp = false;
@@ -87,56 +88,66 @@
 
     isLoading = true;
     var sessionId = Guid.NewGuid().ToString();
-    logger.LogDebug("OnInitializedAsync for new session {SessionId}", sessionId);
+    var baseUrl = navManager.ToBaseRelativePath(navManager.Uri);
+    logger.LogDebug("OnInitializedAsync for new session {SessionId} on page {BaseUrl}", sessionId, baseUrl);
     localStorage.SetSessionId(sessionId);
 
-    isRunningInApp = await JSRuntime.InvokeAsync<bool>("isAppInstalled");
+    //If we are on a page that requires auth.. (I.e. anything but the home page)
+    if (baseUrl.Trim().Length > 0)
+    {
+      isRunningInApp = await JSRuntime.InvokeAsync<bool>("isAppInstalled");
 
-    var appState = localStorage.GetAppState();
-    if (isRunningInApp)
-    {
-      if (appState.InstalledState != AppState.FeatureState.Configured)
+      var appState = localStorage.GetAppState();
+      if (isRunningInApp)
       {
-        appState.InstalledState = AppState.FeatureState.Configured;
-        localStorage.SetAppState(appState);
-      }
-    }
-    else
-    {
-      if (appState.InstalledState == AppState.FeatureState.OptedOut)
-      {
-        hasDismissedNotRunningInApp = true;
+        if (appState.InstalledState != AppState.FeatureState.Configured)
+        {
+          appState.InstalledState = AppState.FeatureState.Configured;
+          localStorage.SetAppState(appState);
+        }
       }
       else
       {
-        appState.InstalledState = AppState.FeatureState.None;
-        localStorage.SetAppState(appState);
+        if (appState.InstalledState == AppState.FeatureState.OptedOut)
+        {
+          hasDismissedNotRunningInApp = true;
+        }
+        else
+        {
+          appState.InstalledState = AppState.FeatureState.None;
+          localStorage.SetAppState(appState);
+        }
+      }
+    
+      var result = await Http.PostApiData<GetLoggedInUserResponse, MainLayout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetLoggedInUser", new GetLoggedInUserRequest());
+      isLoggedIn = result != null && !string.IsNullOrWhiteSpace(result.UserName);
+
+      logger.LogDebug("OnInitializedAsync isLoggedIn? {IsLoggedIn}; Push Notifications? {PushNotificationState}; ", isLoggedIn, appState.PushNotificationState);
+
+      if (isLoggedIn)
+      {
+        if (appState.PushNotificationState == AppState.FeatureState.None)
+        {
+          logger.LogDebug("PushNotificationState is None, Redirecting");
+          isOnBoarded = false;
+          navManager.NavigateToPage(AppConstants.PageUrlPushNotifications);
+        }
+        else if (appState.LocationState == AppState.FeatureState.None)
+        {
+          logger.LogDebug("LocationState is None, Redirecting");
+          isOnBoarded = false;
+          navManager.NavigateToPage(AppConstants.PageUrlGetLocation);
+        }
+        else if (!appState.HasSeenReferralCode)
+        {
+          logger.LogDebug("Has not seen referral code, Redirecting");
+          isOnBoarded = false;
+          navManager.NavigateToPage(AppConstants.PageUrlReferralCode);
+        }
       }
     }
 
-    var result = await Http.PostApiData<GetLoggedInUserResponse, MainLayout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetLoggedInUser", new GetLoggedInUserRequest());
-    isLoggedIn = result != null && !string.IsNullOrWhiteSpace(result.UserName);
-
-    logger.LogDebug("OnInitializedAsync isLoggedIn? {IsLoggedIn}; Push Notifications? {PushNotificationState}; ", isLoggedIn, appState.PushNotificationState);
-
-    if (isLoggedIn)
-    {
-      if (appState.PushNotificationState == AppState.FeatureState.None)
-      {
-        logger.LogDebug("PushNotificationState is None, Redirecting");
-        navManager.NavigateToPage(AppConstants.PageUrlPushNotifications);
-      }
-      else if (appState.LocationState == AppState.FeatureState.None)
-      {
-        logger.LogDebug("LocationState is None, Redirecting");
-        navManager.NavigateToPage(AppConstants.PageUrlGetLocation);
-      }
-      else if (!appState.HasSeenReferralCode)
-      {
-        logger.LogDebug("Has not seen referral code, Redirecting");
-        navManager.NavigateToPage(AppConstants.PageUrlReferralCode);
-      }
-    }
+    
 
     SetMenuCss(navManager.Uri);
 
