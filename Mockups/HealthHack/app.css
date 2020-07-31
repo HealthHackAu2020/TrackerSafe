@@ -420,7 +420,7 @@ a.nav-item:hover {
 }
 
 .business-card {
-    margin: 1rem;
+    padding: 1rem;
     border-bottom: 1px solid #dcd5d0;
 }
 
@@ -450,6 +450,35 @@ a.nav-item:hover {
     margin: 1rem;
 }
 
+.qrbussiness-card {
+    margin: 2rem 1rem;
+    background-color: #f4f3f2;
+    border: 1px solid #dcd5d0;
+    padding: 1rem;
+}
+
+.carousel-indicators li {
+    width: 13px;
+    height: 13px;
+    background-color: #dcd5d0;
+    margin-right: 6px;
+    margin-left: 6px;
+    opacity: 1.0;
+    border: none;
+    border-radius: 2rem;
+}
+
+.carousel-indicators .active {
+    background-color: #00A9C9;
+}
+
+.carousel-indicators {
+   top: 0px;
+}
+
+.carousel-item {
+    margin-top: 3rem;
+}
 
 
 
