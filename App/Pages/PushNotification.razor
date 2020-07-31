@@ -45,16 +45,15 @@ else
   private bool isFirstTime = false;
   private bool isConfigured = false;
 
-  protected override Task OnInitializedAsync()
-  {    
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
     isLoading = true;
     var appState = localStorage.GetAppState();
     if (appState.PushNotificationState == AppState.FeatureState.None)
     {
       isFirstTime = true;
     }
-    isLoading = false;
-    return Task.CompletedTask;
   }
 
   private async void SetupNotifications(MouseEventArgs e)
@@ -72,7 +71,7 @@ else
 
     if (isConfigured)
     {
-      await Task.Delay(3000);
+      localStorage.SetSuccessMessage("You have successfully set up Web Push Notifications!");
       navManager.NavigateToPage(AppConstants.PageUrlHomeLoggedIn, true);
     }
   }

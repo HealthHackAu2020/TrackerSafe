@@ -38,17 +38,27 @@
       </div>
     </div>
     <div>
-      <button class="btn btn-primary btn-block mt-1" type="button" @onclick="NavigateToSignUp">Sign Up</button>
-      <button class="btn btn-primary btn-block mt-1" type="button" @onclick="NavigateToLogin">Log In</button>
+      @if (string.IsNullOrWhiteSpace(userName))
+      {
+        <button class="btn btn-primary btn-block mt-1" type="button" @onclick="NavigateToSignUp">Sign Up</button>
+        <button class="btn btn-primary btn-block mt-1" type="button" @onclick="NavigateToLogin">Log In</button>
+      }
+      else
+      {
+        <h2>Welcome @userName</h2>
+        <div class="text-center" style="margin-top: 1.25rem;"><p>Use the menu at the bottom to navigate around</p></div>
+        <button class="btn btn-primary btn-block mt-1" type="button" @onclick="NavigateToSettings"><i class="fas fa-cogs"></i> My Settings</button>
+      }
     </div>
   </div>
 </div>
 
 @code {
-  
+  private string userName = "";
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
+    userName = localStorage.GetUserName();
   }
 
   private void Carousel(MouseEventArgs e)
@@ -65,5 +75,11 @@
   {
     logger.LogDebug("NavigateToLogin");
     navManager.NavigateToPage(AppConstants.PageUrlLogin);
+  }
+
+  private void NavigateToSettings(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToSettings");
+    navManager.NavigateToPage(AppConstants.PageUrlHomeLoggedIn);
   }
 }

@@ -90,8 +90,9 @@
   private bool featurePushNotificationsEnabled = false;
   private bool featureLocationEnabled = false;
   private bool featureInstalledApp = false;
-  protected override Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
   {
+    await base.OnInitializedAsync();
     var appState = localStorage.GetAppState();
     if (appState.PushNotificationState == AppState.FeatureState.Configured)
     {
@@ -105,7 +106,6 @@
     {
       featureInstalledApp = true;
     }
-    return Task.CompletedTask;
   }
 
   private void NavigateToPushNotificationsTest(MouseEventArgs e)

@@ -44,8 +44,8 @@
     localStorage.SetAppState(null);
     isLoading = false;
     isSuccessful = true;
+    localStorage.SetSuccessMessage("You have successfully logged out!");
     StateHasChanged();
-    await Task.Delay(3000);
     navManager.NavigateToPage(AppConstants.PageUrlHome, true);
   }
 }

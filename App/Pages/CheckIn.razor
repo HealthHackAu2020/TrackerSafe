@@ -1,0 +1,185 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlCheckIn)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<CheckIn> logger
+@inject LocationService locationService
+
+<div class="row justify-content-center">
+  <h1 class="text-center top30 mt-5"><i class="fas fa-compass"></i> Check-in</h1>
+</div>
+@if (isLoading)
+{
+  <LoadingButton></LoadingButton>
+}
+else
+{
+  <div class="row header bg-maincolour no-gutters">
+    <div class="col-11 no-gutters"><h4 style="margin-top: 4px;">Scan QR Code on your Device's Camera</h4></div> 
+  </div>
+  <div class="row">
+    <div class="white-card">
+      <div class="col-12 text-center">
+        <i class="fas fa-camera-retro mt-3 mb-3" style="font-size: 64px;"></i>
+        <p>Use your camera in order to scan QR code.</p>
+        <p>Once you do, it should link you back to this page to complete the check in.</p>
+        <p>Alternatively, use your current location below to check in.</p>
+      </div>
+    </div>
+  </div>
+  <div class="row header bg-maincolour no-gutters">
+    <div class="col-11 no-gutters"><h4 style="margin-top: 4px;">Current Location</h4></div> 
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-primary btn-block mt-5" type="button" @onclick="UseMyLocation">Use my current location</button>
+    </div>
+    @* <div class="col-12">
+      <label for="address">Search Address</label>
+      <input type="text" class="form-control" id="address" @ref="textAutoComplete">
+    </div>   *@
+  </div>
+  @if (mapIsSet)
+  {
+    <GoogleMap @ref="@map" Id="map" Options="@mapOptions"></GoogleMap>
+
+    <div class="row"><button class="btn btn-secondary btn-block mt-3" type="button"  @onclick="PlaceMarker">Place marker in centre</button></div>
+
+    <div class="row"><button class="btn btn-primary btn-block mt-3" type="button"  @onclick="ConfirmCheckIn">Confirm check-in</button></div>
+  }
+  
+}
+
+@code 
+{
+  private bool isLoading = false;
+  private bool mapIsSet = false;
+  private Location location;
+  private GoogleMap map;
+  private MapOptions mapOptions;
+  private Marker marker;
+  //private Autocomplete autocomplete;
+  //ElementReference textAutoComplete;
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    logger.LogDebug($"OnInitializedAsync");
+  }
+
+  //This is not working yet, might need to check the NuGet package and wait till it's updated..
+  //from map attr: OnAfterInit="async () => await OnAfterMapInit()"
+  /*
+  private async Task OnAfterMapInit()
+  {
+    logger.LogDebug("OnAfterMapInit");
+    autocomplete = await Autocomplete.CreateAsync(map.JsRuntime, textAutoComplete, new AutocompleteOptions
+    {
+      StrictBounds = false
+    });
+
+    logger.LogDebug("OnAfterMapInit - created autocomplete");
+    await autocomplete.SetFields(new[] { "address_components", "geometry", "name" });
+
+    await autocomplete.AddListener("place_changed", async () =>
+    {
+      var place = await autocomplete.GetPlace();
+
+      if (place?.Geometry == null)
+      {
+        //this.message = "No results available for " + place?.Name;
+        logger.LogDebug("Autocomplete: No results for {PlaceName}", place?.Name);
+      }
+      else if (place.Geometry.Location != null)
+      {
+        logger.LogDebug("Autocomplete: Got single location {Lat}, {Lon}", place.Geometry.Location.Lat, place.Geometry.Location.Lng);
+        await map.InteropObject.SetCenter(place.Geometry.Location);
+        await map.InteropObject.SetZoom(18);
+
+        marker = await Marker.CreateAsync(map.JsRuntime, new MarkerOptions
+        {
+          Position = place.Geometry.Location,
+          Map = map.InteropObject,
+          Title = place.Name
+        });
+
+      }
+      else if (place.Geometry.Viewport != null)
+      {
+        logger.LogDebug("Autocomplete: Multiple results for {PlaceName} North: {ViewPortNorth}", place.Name, place.Geometry.Viewport.North);
+        await map.InteropObject.FitBounds(place.Geometry.Viewport, 5);
+      }
+
+      this.StateHasChanged();
+    });
+  }
+  */
+
+  private async void UseMyLocation(MouseEventArgs e)
+  {
+    logger.LogDebug($"UseMyLocation");
+    isLoading = true;
+    location = await locationService.GetLocationAsync();
+    var appState = localStorage.GetAppState();
+    if (location != null)
+    {
+      appState.LocationState = AppState.FeatureState.Configured;
+      SetMap(Convert.ToDouble(location.Latitude), Convert.ToDouble(location.Longitude));
+    }
+    else
+    {
+      appState.LocationState = AppState.FeatureState.OptedOut;
+    }
+    localStorage.SetAppState(appState);
+    isLoading = false;
+    StateHasChanged();
+  }
+
+  private void SetMap(double lat, double lon)
+  {
+    logger.LogDebug($"SetMap");
+    mapIsSet = true;
+    mapOptions = new MapOptions()
+    {
+      Zoom = 18,
+      Center = new LatLngLiteral()
+      {
+        Lat = lat,
+        Lng = lon
+      },
+      MapTypeId = MapTypeId.Roadmap
+    };
+  }
+
+  private async Task PlaceMarker()
+  {
+    var position = await map.InteropObject.GetCenter();
+
+    if (marker == null)
+    {
+      marker = await Marker.CreateAsync(map.JsRuntime, new MarkerOptions()
+      {
+        Position = position,
+        Map = map.InteropObject,
+        Label = $"You are here"
+      });
+    }
+    else
+    {
+      await marker.SetPosition(position);
+    }
+
+    logger.LogDebug("Setting marker location to {Lat} {Lon}", position.Lat, position.Lng);
+  }
+
+  private async Task ConfirmCheckIn()
+  {
+    if (marker == null)
+    {
+      await PlaceMarker();
+    }
+    var position = await marker.GetPosition();
+    logger.LogDebug("Setting location to {Lat} {Lon}", position.Lat, position.Lng);
+  }
+
+}

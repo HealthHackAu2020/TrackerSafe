@@ -47,8 +47,9 @@ else
 
   private Location location;
 
-  protected override Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
   {
+    await base.OnInitializedAsync();
     isLoading = true;
     var appState = localStorage.GetAppState();
     if (appState.LocationState == AppState.FeatureState.None)
@@ -57,7 +58,6 @@ else
     }
     isLoading = false;
     StateHasChanged();
-    return Task.CompletedTask;
   }
 
   private async void SetupLocation(MouseEventArgs e)
@@ -86,7 +86,7 @@ else
 
     if (isConfigured)
     {
-      await Task.Delay(3000);
+      localStorage.SetSuccessMessage("Your location is configured and available!");
       navManager.NavigateToPage(AppConstants.PageUrlHomeLoggedIn, true);
     }
   }

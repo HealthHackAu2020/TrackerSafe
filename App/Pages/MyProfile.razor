@@ -75,10 +75,10 @@
 @code 
 {
   private string userName = "";
-  protected override Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
   {
+    await base.OnInitializedAsync();
     userName = localStorage.GetUserName();
-    return Task.CompletedTask;
   }
  
 }

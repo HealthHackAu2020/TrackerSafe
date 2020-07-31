@@ -24,8 +24,14 @@
       </div>
       @if (!isRunningInApp && !hasDismissedNotRunningInApp)
       {
-        <div class="alert alert-warning row justify-content-center" role="alert">
-          You are running in a browser, not installed on your device.  For quicker access, install the application to your device.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>. <span class="badge badge-pill badge-danger" ><a role="button" @onclick="DismissInstallWarning" alt="Dismiss Warning"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
+        <div class="alert alert-warning row no-gutters justify-content-center" role="alert">
+          You are running in a browser, not installed on your device.  For quicker access, install the application to your device.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>.&nbsp;<span class="badge badge-pill badge-danger" ><a role="button" @onclick="DismissInstallWarning" alt="Dismiss Warning"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
+        </div>
+      }
+      @if (!string.IsNullOrWhiteSpace(successMessage))
+      {
+        <div class="alert alert-success row no-gutters justify-content-center" role="alert">
+          @successMessage&nbsp;<span class="badge badge-pill badge-success" ><a role="button" @onclick="DismissSuccessMessage" alt="Dismiss Success Message"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
         </div>
       }
     }
@@ -45,8 +51,8 @@
       </a>
       <a role="button" class="nav-item" @onclick="NavigateToCheckin" >
         <div class="nav-item text-center">
-          <i class="fas fa-compass"></i>
-          <h6>Check-in</h6>
+          <i class="fas fa-compass @menuCssClassCheckIn"></i>
+          <h6 class="@menuCssClassCheckIn">Check-in</h6>
         </div>
       </a>
       <a role="button" class="nav-item" @onclick="NavigateToRewards" >
@@ -80,6 +86,9 @@
   private bool hasDismissedNotRunningInApp = false;
 
   private string menuCssClassProfile = "";
+  private string menuCssClassCheckIn = "";
+
+  private string successMessage = "";
 
   protected async override Task OnInitializedAsync()
   {
@@ -92,8 +101,8 @@
     logger.LogDebug("OnInitializedAsync for new session {SessionId} on page {BaseUrl}", sessionId, baseUrl);
     localStorage.SetSessionId(sessionId);
 
-    //If we are on a page that requires auth.. (I.e. anything but the home page)
-    if (baseUrl.Trim().Length > 0)
+    //If we are on a page that requires auth.. (I.e. anything but the home page) or we are logged in
+    if (baseUrl.Trim().Length > 0 || !string.IsNullOrWhiteSpace(localStorage.GetJwt()))
     {
       isRunningInApp = await JSRuntime.InvokeAsync<bool>("isAppInstalled");
 
@@ -147,9 +156,7 @@
       }
     }
 
-    
-
-    SetMenuCss(navManager.Uri);
+    SetNavigationVisualChange(navManager.Uri);
 
     isLoading = false;
   }
@@ -165,16 +172,34 @@
     }
   }
 
-  private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+  private void DismissSuccessMessage(MouseEventArgs e)
   {
-    SetMenuCss(e.Location);
+    localStorage.SetSuccessMessage("");
   }
 
-  private void SetMenuCss(string url)
+  private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
   {
+    SetNavigationVisualChange(e.Location);
+  }
+
+  private void SetNavigationVisualChange(string url)
+  {
+    successMessage = localStorage.GetSetSuccessMessage();
+    if (!string.IsNullOrWhiteSpace(successMessage))
+    {
+      localStorage.SetSuccessMessage("");
+    }
+
+    menuCssClassProfile = "";
+    menuCssClassCheckIn = "";
+
     if (url.ToLower().Contains(AppConstants.PageUrlMyProfile))
     {
       menuCssClassProfile = "active";
+    }
+    else if (url.ToLower().Contains(AppConstants.PageUrlCheckIn))
+    {
+      menuCssClassCheckIn = "active";
     }
   }
 
@@ -193,7 +218,7 @@
   private void NavigateToCheckin(MouseEventArgs e)
   {
     logger.LogDebug("NavigateToCheckin");
-    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+    navManager.NavigateToPage(AppConstants.PageUrlCheckIn);
   }
 
   private void NavigateToRewards(MouseEventArgs e)

@@ -73,8 +73,8 @@
     localStorage.SetUserName(result.UserName);
     localStorage.SetReferralCode(result.ReferralCode);
     isLoading = false;
+    localStorage.SetSuccessMessage("You have successfully signed up!");
     StateHasChanged();
-    await Task.Delay(3000);
     navManager.NavigateToPage(AppConstants.PageUrlHomeLoggedIn, true);
   }
 }

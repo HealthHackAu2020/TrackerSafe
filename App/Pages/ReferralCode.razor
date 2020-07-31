@@ -26,12 +26,12 @@
 {
   private string referralCode = "";
   private bool hasFinishedSignup = false;
-  protected override Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
   {
+    await base.OnInitializedAsync();
     referralCode = localStorage.GetReferralCode();
     var appState = localStorage.GetAppState();
     hasFinishedSignup = appState.HasSeenReferralCode;
-    return Task.CompletedTask;
   }
 
   private void FinishSignUp(MouseEventArgs e)
