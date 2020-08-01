@@ -4,6 +4,7 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject ILogger<MainLayout> logger
 @inject IJSRuntime JSRuntime
+@inject IModalService modal
 @* <div class="fixed-top justify-content-center bg-light">
   <p>&nbsp;<!--Top bar content will go here--></p>
 </div> *@
@@ -251,7 +252,8 @@
   private void NavigateToReferralCode(MouseEventArgs e)
   {
     logger.LogDebug("NavigateToReferralCode");
-    navManager.NavigateToPage(AppConstants.PageUrlReferralCode);
+    //navManager.NavigateToPage(AppConstants.PageUrlReferralCode);
+    modal.Show<ShowReferralCode>("Referral Code");
   }
 
   private void NavigateToMyProfile(MouseEventArgs e)

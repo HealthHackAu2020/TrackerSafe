@@ -11,6 +11,7 @@ using BlazorStrap;
 using Blazored.LocalStorage;
 using Blazor.Extensions.Logging;
 using AspNetMonsters.Blazor.Geolocation;
+using Blazored.Modal;
 
 namespace app
 {
@@ -31,6 +32,8 @@ namespace app
       );
 
       builder.Services.AddSingleton<LocationService>();
+
+      builder.Services.AddBlazoredModal();
 
       await builder.Build().RunAsync();
     }
