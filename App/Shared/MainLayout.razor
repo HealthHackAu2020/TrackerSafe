@@ -24,11 +24,13 @@
         <div class="row header no-gutters">
           <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="button" @onclick="NavigateToReferralCode">Share code with friends</button></div>   
           <div class="col-6 no-margins text-right alert-icon">
-            @if(numNotifications > 0)
-            {
-              <div class="notification-alert">@numNotifications</div>
-            }
-            <a role="button" @onclick="NavigateToViewNotifications"><i class="far fa-bell"></i></a> 
+            <a role="button" @onclick="NavigateToViewNotifications">
+              @if(numNotifications > 0)
+              {
+                <div class="notification-alert">@numNotifications</div>
+              }
+              <i class="far fa-bell"></i>
+            </a> 
           </div>
         </div>
       }

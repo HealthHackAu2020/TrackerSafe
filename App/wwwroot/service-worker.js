@@ -19,5 +19,6 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   console.log('Clicked Push: ' + JSON.stringify(event));
   event.notification.close();
-  event.waitUntil(clients.openWindow("/view-notifications"));
+  event.waitUntil(clients.openWindow("https://healthhackau2020.github.io/TrackerSafe/view-notifications"));
+  console.log('Clicked Push Done!');
 });
