@@ -47,11 +47,25 @@ namespace TrackerSafe.Backend.Functions
           throw new ApplicationException($"Failed - user does not exist in database '{res.UserName}'");
         }
 
+        if (user.Notifications == null)
+        {
+          user.Notifications = new List<Notification>();
+        }
+        var newNotification = new Notification();
+        newNotification.Id = Guid.NewGuid();
+        newNotification.CreatedDateUtc = DateTime.UtcNow;
+        newNotification.TypeOfNotification = Notification.NotificationType.Info;
+        newNotification.Message = message;
+        newNotification.FullText = message;
+        user.Notifications.Add(newNotification);
+        await _userDataStore.UpdateAsync(res.UserId, user);
+
         var numSubscriptions = user.PushSubscriptions?.Count;
 
         var idsToRemove = new List<Guid>();
         if (user.PushSubscriptions != null && user.PushSubscriptions.Count > 0)
         {
+          var wasSent = false;
           var publicKey = Environment.GetEnvironmentVariable("PushNotificationPublicKey");
           var privateKey = Environment.GetEnvironmentVariable("PushNotificationPrivateKey");
           var vapidDetails = new WebPush.VapidDetails("mailto:<someone@example.com>", publicKey, privateKey);
@@ -61,11 +75,13 @@ namespace TrackerSafe.Backend.Functions
             var pushSubscription = new WebPush.PushSubscription(currSub.Url, currSub.P256dh, currSub.Auth);
             var payload = JsonConvert.SerializeObject(new
             {
-              message
+              id = newNotification.Id.ToString(),
+              message = newNotification.Message
             });
             try
             {
               await webPushClient.SendNotificationAsync(pushSubscription, payload, vapidDetails);
+              wasSent = true;
             }
             catch (Exception ex)
             {
@@ -75,6 +91,14 @@ namespace TrackerSafe.Backend.Functions
                 idsToRemove.Add(currSub.Id);
               }
             }
+          }
+
+          if (wasSent)
+          {
+            user = await _userDataStore.GetByUserNameAsync(res.UserName);
+            var notificationToUpdate = user.Notifications.Single(n => n.Id == newNotification.Id);
+            notificationToUpdate.PushSentAtDateUtc = DateTime.UtcNow;
+            await _userDataStore.UpdateAsync(res.UserId, user);
           }
         }
 

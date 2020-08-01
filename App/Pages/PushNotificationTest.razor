@@ -86,8 +86,17 @@
     logger.LogDebug($"SendTestNotification");
     var result = await Http.PostApiData<string, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/SendPushNotificationToSelf", "Testing push to self!");
     logger.LogDebug($"SendTestNotification got result: {result}");
+
+    //check for notifications to update state
+    var notificationsResult = await Http.PostApiData<GetNotificationsForUserResponse, PushNotification>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetNotificationsForUser", new GetNotificationsForUserRequest());
+    if (notificationsResult != null)
+    {
+      localStorage.SetNumberOfAlerts(notificationsResult.Notifications == null ? 0 : notificationsResult.Notifications.Count(n => n.IsRead == false));
+    }
     isLoading = false;
     StateHasChanged();
+    //come back refreshed ;)
+    navManager.NavigateToPage(AppConstants.PageUrlPushNotificationsTest, true);
   }
 
   private void MarkNotificationWorking(MouseEventArgs e)

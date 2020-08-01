@@ -58,7 +58,6 @@ app {
 
 .main {
     flex: 1;
-    margin-bottom: 60px;
 }
 
     .main .top-row {
@@ -274,7 +273,7 @@ app {
 }
 
 .alert-red {
-    background-color: #bb0707;
+    background-color: #f02849;
 }
 
 .alert-card {
@@ -500,17 +499,31 @@ a.nav-item:hover {
 .not-enabled {
     text-align: right;
 }
-
 .not-enabled i {
     font-size: 1.25rem;
     margin-top: 0.2rem;
     margin-right: 0.5rem;
-    color: red;
+    color: #f02849;
 }
-
 .not-enabled p {
     font-weight: 700;
-    color: red;
+    color: #f02849;
 }
+
+.notification-alert {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    z-index: 15;
+    background-color: #f02849;
+    font-size: 0.5rem;
+    line-height: 0.3rem;
+    padding: 0.3rem;
+    font-weight: 700;
+    color: #FFF;
+    border: 2px solid #FFF;
+    border-radius: 1rem;
+}
+
 
 

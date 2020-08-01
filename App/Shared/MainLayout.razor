@@ -23,7 +23,13 @@
       {
         <div class="row header no-gutters">
           <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="button" @onclick="NavigateToReferralCode">Share code with friends</button></div>   
-          <div class="col-6 no-margins text-right alert-icon"><i class="far fa-bell"></i></div> 
+          <div class="col-6 no-margins text-right alert-icon">
+            @if(numNotifications > 0)
+            {
+              <div class="notification-alert">@numNotifications</div>
+            }
+            <a role="button" @onclick="NavigateToViewNotifications"><i class="far fa-bell"></i></a> 
+          </div>
         </div>
       }
 
@@ -100,6 +106,7 @@
   private bool isRunningInApp = false;
   private bool hasDismissedNotRunningInApp = false;
   private bool isSubPage = false;
+  private int numNotifications = 0;
 
   private string menuCssClassProfile = "";
   private string menuCssClassCheckIn = "";
@@ -176,6 +183,15 @@
           isOnBoarded = false;
           navManager.NavigateToPage(AppConstants.PageUrlReferralCode);
         }
+        else
+        {
+          //check for any notifications on entry
+          var notificationsResult = await Http.PostApiData<GetNotificationsForUserResponse, MainLayout>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetNotificationsForUser", new GetNotificationsForUserRequest());
+          if (notificationsResult != null)
+          {
+            localStorage.SetNumberOfAlerts(notificationsResult.Notifications == null ? 0 : notificationsResult.Notifications.Count(n => n.IsRead == false));
+          }
+        }
       }
     }
 
@@ -214,6 +230,8 @@
     }
 
     outerClass = isOnBoarded ? "main" : "";
+
+    numNotifications = localStorage.GetNumberOfAlerts();
 
     menuCssClassProfile = "";
     menuCssClassCheckIn = "";
@@ -282,5 +300,11 @@
   {
     logger.LogDebug("NavigateToTeams");
     navManager.NavigateToPage(AppConstants.PageUrlTeams);
+  }
+
+  private void NavigateToViewNotifications(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToViewNotifications");
+    navManager.NavigateToPage(AppConstants.PageUrlViewNotifications);
   }
 }

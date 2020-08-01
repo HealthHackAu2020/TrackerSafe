@@ -85,5 +85,14 @@ namespace app.Extensions
     {
       return localStorage.GetItem<string>("suc");
     }
+
+    public static void SetNumberOfAlerts(this Blazored.LocalStorage.ISyncLocalStorageService localStorage, int value)
+    {
+      localStorage.SetItem("nal", value);
+    }
+    public static int GetNumberOfAlerts(this Blazored.LocalStorage.ISyncLocalStorageService localStorage)
+    {
+      return localStorage.GetItem<int>("nal");
+    }
   }
 }

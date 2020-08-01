@@ -19,6 +19,7 @@ namespace TrackerSafe.App
     public const string PageUrlLearnMore = "/learn-more";
     public const string PageUrlTeams = "/teams";
     public const string PageUrlReferralCode = "/referral-code";
+    public const string PageUrlViewNotifications = "/view-notifications";
     public const string InvalidSession = "/invalid-session";
     public const string UnexpectedError = "/unexptected-error";
   }

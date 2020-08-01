@@ -1,0 +1,99 @@
+﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlViewNotifications)]
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject ILogger<ViewNotifications> logger
+
+@if (isLoading)
+{
+  <LoadingButton></LoadingButton>
+}
+else 
+{
+  <div class="row info-card no-gutters">
+    <div class="col-12"><h2>View Notifications</h2></div>
+    @if(unreadNotifications.Count() > 0)
+    {
+      <div class="col-12"><h3>Unread</h3></div>
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <th scope="col"><i class="fas fa-chevron-up"></i>&nbsp;Created At</th>
+          <th scope="col">Title</th>
+          <th scope="col">Text</th>
+        </thead>
+        <tbody>
+        @foreach (var currItem in unreadNotifications)
+        {
+          <tr>
+            <td>@currItem.CreatedDateUtc.ToLocalTime().ToString(dateFormat)</td>
+            <td>@currItem.Message</td>
+            <td>@currItem.FullText</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+      <button class="btn btn-primary btn-block" type="button" @onclick="MarkAllAsRead">Mark all as read</button>
+      <br />
+    }
+    @if(readNotifications.Count() > 0)
+    {
+      <div class="col-12"><h3>Read</h3></div>
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <th scope="col"><i class="fas fa-chevron-down"></i>&nbsp;Created At</th>
+          <th scope="col">Title</th>
+          <th scope="col">Text</th>
+        </thead>
+        <tbody>
+        @foreach (var currItem in readNotifications)
+        {
+          <tr>
+            <td>@currItem.CreatedDateUtc.ToLocalTime().ToString(dateFormat)</td>
+            <td>@currItem.Message</td>
+            <td>@currItem.FullText</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+}
+
+@code 
+{
+
+  private const string dateFormat = "dd-MMM-yyyy hh:mm";
+  private bool isLoading = false;
+  private string userName = "";
+  private IEnumerable<Notification> unreadNotifications = new List<Notification>();
+  private IEnumerable<Notification> readNotifications = new List<Notification>();
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    isLoading = true;
+    StateHasChanged();
+
+    userName = localStorage.GetUserName();
+
+    var notificationsResult = await Http.PostApiData<GetNotificationsForUserResponse, ViewNotifications>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/GetNotificationsForUser", new GetNotificationsForUserRequest());
+    if (notificationsResult != null)
+    {
+      localStorage.SetNumberOfAlerts(notificationsResult.Notifications == null ? 0 : notificationsResult.Notifications.Count(n => n.IsRead == false));
+      unreadNotifications = notificationsResult.Notifications?.Where(n => n.IsRead == false).OrderBy(n => n.CreatedDateUtc);
+      readNotifications = notificationsResult.Notifications?.Where(n => n.IsRead == true).OrderByDescending(n => n.CreatedDateUtc);
+    }
+
+    isLoading = false;
+    StateHasChanged();
+  }
+  
+  private void MarkAllAsRead(MouseEventArgs e)
+  {
+    logger.LogDebug("MarkAllAsRead");
+    isLoading = true;
+    navManager.NavigateToPage(AppConstants.PageUrlViewNotifications, true);
+    isLoading = false;
+  }
+
+ 
+}

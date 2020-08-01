@@ -17,5 +17,6 @@ namespace TrackerSafe.Backend.DataModel
     public string MyReferralCode { get; set; }
     public string PwHash { get; set; }
     public List<PushSubscription> PushSubscriptions { get; set; }
+    public List<TrackerSafe.Shared.Notification> Notifications { get; set; }
   }
 }
