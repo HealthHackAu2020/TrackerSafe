@@ -59,10 +59,9 @@ else
         <input type="text" class="form-control" id="address" @ref="textAutoComplete">
       </div>   *@
     </div>
+    <GoogleMap @ref="@map" Id="map" Options="@mapOptions" OnAfterInit="async () => await OnAfterMapInit()"></GoogleMap>
     @if (mapIsSet)
     {
-      <GoogleMap @ref="@map" Id="map" Options="@mapOptions"></GoogleMap>
-      <div class="row"><button class="btn btn-secondary btn-block mt-3" type="button"  @onclick="PlaceMarker">Place marker in centre</button></div>
       <div class="row"><button class="btn btn-primary btn-block mt-3" type="button"  @onclick="ConfirmCheckIn">Confirm check-in</button></div>
     }
   }
@@ -98,23 +97,22 @@ else
 
     var uri = navManager.ToAbsoluteUri(navManager.Uri);
     StringValues checkInType;
+    StringValues busName;
+    StringValues lat;
+    StringValues lon;
     if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("type", out checkInType))
     {
       if (string.Equals(checkInType.ToString(), "qr", StringComparison.CurrentCultureIgnoreCase))
       {
-        StringValues busName;
-        StringValues lat;
-        StringValues lon;
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("business", out busName))
         {
-            var busNameLookup = busName.ToString();
-            logger.LogDebug("Got QR Business Name {BusinessName}", busNameLookup);
-            //TODO: lookup details
-            qrBusiness = busNameLookup;
-            qrBusinessAddress = busNameLookup;
-          }
+          var busNameLookup = busName.ToString();
+          logger.LogDebug("Got QR Business Name {BusinessName}", busNameLookup);
+          //TODO: lookup details
+          qrBusiness = busNameLookup;
+          qrBusinessAddress = busNameLookup;
         }
-
+    
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("lat", out lat))
         {
           double.TryParse(lat.ToString(), out qrLat);
@@ -127,6 +125,7 @@ else
       }
     }
   }
+
 
   private void SwitchToQr(MouseEventArgs e)
   {
@@ -158,12 +157,19 @@ else
     StateHasChanged();
   }
 
-  //This is not working yet, might need to check the NuGet package and wait till it's updated..
-  //from map attr: OnAfterInit="async () => await OnAfterMapInit()"
-  /*
   private async Task OnAfterMapInit()
   {
     logger.LogDebug("OnAfterMapInit");
+
+    //first time setup
+    if (!mapIsSet)
+    {
+      await map.InteropObject.AddListener("dragend", OnDragEnd);
+    }
+    mapIsSet = true;
+
+    //This is not working yet, might need to check the NuGet package and wait till it's updated..
+    /*
     autocomplete = await Autocomplete.CreateAsync(map.JsRuntime, textAutoComplete, new AutocompleteOptions
     {
       StrictBounds = false
@@ -203,14 +209,14 @@ else
 
       this.StateHasChanged();
     });
+    */
   }
-  */
+
 
 
   private void SetMap(double lat, double lon)
   {
     logger.LogDebug($"SetMap");
-    mapIsSet = true;
     mapOptions = new MapOptions()
     {
       Zoom = 18,
@@ -221,6 +227,12 @@ else
       },
       MapTypeId = MapTypeId.Roadmap
     };
+  }
+
+  private async void OnDragEnd()
+  {
+    logger.LogDebug($"OnDragEnd");
+    await PlaceMarker();
   }
 
   private async Task PlaceMarker()
