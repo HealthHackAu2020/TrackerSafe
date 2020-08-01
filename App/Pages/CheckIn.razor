@@ -5,8 +5,8 @@
 @inject ILogger<CheckIn> logger
 @inject LocationService locationService
 
-<div class="row justify-content-center">
-  <h1 class="text-center top30 mt-5"><i class="fas fa-compass"></i> Check-in</h1>
+<div class="row">
+  <h1 class="top30 mt-5">Check-in</h1>
 </div>
 @if (isLoading)
 {
@@ -15,24 +15,38 @@
 else
 {
   <div class="row tab-menu no-gutters">
-    <div class="col-6 text-center"><a role="button" class="@buttonClassQr" @onclick="SwitchToQr">Scan QR Code</a></div>
-    <div class="col-6 text-center"><a role="button" class="@buttonClassLocation" @onclick="SwitchToLocation">Use Current Location</a></div>
+    <div class="col-6 text-center"><a role="button" class="@buttonClassQr" @onclick="SwitchToQr">Scan <br />QR Code</a></div>
+    <div class="col-6 text-center"><a role="button" class="@buttonClassLocation" @onclick="SwitchToLocation">Use <br />Location</a></div>
   </div>
   @if(!string.IsNullOrWhiteSpace(buttonClassQr))
   {
-    <div class="row header bg-maincolour no-gutters">
-      <div class="col-11 no-gutters"><h4 style="margin-top: 4px;">Scan QR Code on your Device's Camera</h4></div> 
-    </div>
-    <div class="row">
-      <div class="white-card">
-        <div class="col-12 text-center">
-          <i class="fas fa-camera-retro mt-3 mb-3" style="font-size: 64px;"></i>
-          <p>Use your camera in order to scan QR code.</p>
-          <p>Once you do, it should link you back to this page to complete the check in.</p>
-          <p>Alternatively, use your current location below to check in.</p>
+    if (string.IsNullOrWhiteSpace(qrBusiness))
+    {
+      <div class="row header bg-maincolour no-gutters">
+        <div class="col-11 no-gutters"><h4 style="margin-top: 4px;">Scan QR Code on your Device's Camera</h4></div> 
+      </div>
+      <div class="row">
+        <div class="white-card">
+          <div class="col-12 text-center">
+            <i class="fas fa-camera-retro mt-3 mb-3" style="font-size: 64px;"></i>
+            <p>Use your camera in order to scan QR code.</p>
+            <p>Once you do, it should link you back to this page to complete the check in.</p>
+            <p>Alternatively, use your current location below to check in.</p>
+          </div>
         </div>
       </div>
-    </div>
+    }
+    else
+    {
+      <div class="row qrbussiness-card">
+      <div class="col-12">
+        <h3>@qrBusiness</h3>
+        <p>@qrBusinessAddress</p> 
+        <p><strong>Time: @checkinTimeUtc.ToLocalTime().ToString("MMM dd") @checkinTimeUtc.ToLocalTime().ToString("hh:mm tt")</strong></p>
+        <p><button class="btn btn-primary btn-block" type="submit">Confirm check-In</button></p>
+      </div>
+  </div>
+    }
   }
   else
   {
@@ -69,10 +83,49 @@ else
   private string buttonClassQr = "active";
   private string buttonClassLocation = "";
 
+  private double qrLat;
+  private double qrLon;
+  private string qrBusiness;
+  private string qrBusinessAddress;
+
+  private DateTime checkinTimeUtc;
+
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
     logger.LogDebug($"OnInitializedAsync");
+    checkinTimeUtc = DateTime.UtcNow;
+
+    var uri = navManager.ToAbsoluteUri(navManager.Uri);
+    StringValues checkInType;
+    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("type", out checkInType))
+    {
+      if (string.Equals(checkInType.ToString(), "qr", StringComparison.CurrentCultureIgnoreCase))
+      {
+        StringValues busName;
+        StringValues lat;
+        StringValues lon;
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("business", out busName))
+        {
+            var busNameLookup = busName.ToString();
+            logger.LogDebug("Got QR Business Name {BusinessName}", busNameLookup);
+            //TODO: lookup details
+            qrBusiness = busNameLookup;
+            qrBusinessAddress = busNameLookup;
+          }
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("lat", out lat))
+        {
+          double.TryParse(lat.ToString(), out qrLat);
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("lon", out lon))
+        {
+          double.TryParse(lon.ToString(), out qrLon);
+        }
+      }
+    }
   }
 
   private void SwitchToQr(MouseEventArgs e)
