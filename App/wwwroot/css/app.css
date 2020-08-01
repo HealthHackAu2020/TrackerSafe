@@ -58,6 +58,7 @@ app {
 
 .main {
     flex: 1;
+    margin-bottom: 70px;
 }
 
     .main .top-row {

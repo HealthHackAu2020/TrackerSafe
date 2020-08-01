@@ -69,6 +69,10 @@ else
     {
       <div class="row"><button class="btn btn-primary btn-block mt-3" type="button"  @onclick="ConfirmCheckIn">Confirm check-in</button></div>
     }
+    <br />
+    <br />
+    <br />
+    <br />
   }
 }
 
@@ -265,12 +269,18 @@ else
 
   private async Task ConfirmCheckIn()
   {
+    isLoading = true;
+    StateHasChanged();
     if (marker == null)
     {
       await PlaceMarker();
     }
     var position = await marker.GetPosition();
     logger.LogDebug("Setting location to {Lat} {Lon}", position.Lat, position.Lng);
+    var req = new CreateCheckInRequest(DateTime.UtcNow, position.Lat, position.Lng, null);
+    await Http.PostApiData<CreateCheckInResponse, CheckIn>(navManager, logger, localStorage, $"https://trackersafe.azurewebsites.net/api/CreateCheckIn", req);
+    localStorage.SetSuccessMessage("Successfully checked in!");
+    navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
   }
 
 }

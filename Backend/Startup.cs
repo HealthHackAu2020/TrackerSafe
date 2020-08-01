@@ -28,6 +28,7 @@ namespace TrackerSafe.Backend
       var mongoConnString = Environment.GetEnvironmentVariable("MongoConnectionString");
       var mongoDbName = Environment.GetEnvironmentVariable("MongoDatabaseName");
       builder.Services.AddSingleton<IUserDataStore, UserDataStore>(s => new UserDataStore(mongoConnString, mongoDbName));
+      builder.Services.AddSingleton<ICheckInDataStore, CheckInDataStore>(s => new CheckInDataStore(mongoConnString, mongoDbName));
 
       var config = new ConfigurationBuilder()
         //.SetBasePath(context.FunctionAppDirectory)

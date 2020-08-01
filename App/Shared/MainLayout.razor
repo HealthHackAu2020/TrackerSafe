@@ -35,16 +35,17 @@
         </div>
       }
 
-      @if (!isRunningInApp && !hasDismissedNotRunningInApp && isOnBoarded)
-      {
-        <div class="alert alert-warning row no-gutters justify-content-center" role="alert">
-          You are running in a browser, not installed on your device.  For quicker access, install the application to your device.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>.&nbsp;<span class="badge badge-pill badge-danger" ><a role="button" @onclick="DismissInstallWarning" alt="Dismiss Warning"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
-        </div>
-      }
       @if (!string.IsNullOrWhiteSpace(successMessage))
       {
         <div class="alert alert-success row no-gutters justify-content-center" role="alert">
           @successMessage&nbsp;<span class="badge badge-pill badge-success" ><a role="button" @onclick="DismissSuccessMessage" alt="Dismiss Success Message"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
+        </div>
+      }
+
+      @if (!isRunningInApp && !hasDismissedNotRunningInApp && isOnBoarded)
+      {
+        <div class="alert alert-warning row no-gutters justify-content-center" role="alert">
+          You are running in a browser, not installed on your device.  For quicker access, install the application to your device.  See instructions&nbsp;<a href="https://medium.com/progressivewebapps/how-to-install-a-pwa-to-your-device-68a8d37fadc1" target="_blank" alt="instructions for notifications">here&nbsp;<i class="fas fa-external-link-alt"></i></a>.&nbsp;<span class="badge badge-pill badge-danger" ><a role="button" @onclick="DismissInstallWarning" alt="Dismiss Warning"><i class="fas fa-times"></i>&nbsp;Dismiss</a></span>
         </div>
       }
     }
@@ -216,11 +217,16 @@
   private void DismissSuccessMessage(MouseEventArgs e)
   {
     localStorage.SetSuccessMessage("");
+    successMessage = "";
   }
 
   private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
   {
-    SetNavigationVisualChange(e.Location);
+    if (!e.IsNavigationIntercepted)
+    {
+      SetNavigationVisualChange(e.Location);
+      StateHasChanged();
+    }
   }
 
   private void SetNavigationVisualChange(string url)
@@ -228,6 +234,7 @@
     successMessage = localStorage.GetSetSuccessMessage();
     if (!string.IsNullOrWhiteSpace(successMessage))
     {
+      logger.LogDebug("Showing success message: {SuccessMessage}", successMessage);
       localStorage.SetSuccessMessage("");
     }
 
@@ -308,5 +315,10 @@
   {
     logger.LogDebug("NavigateToViewNotifications");
     navManager.NavigateToPage(AppConstants.PageUrlViewNotifications);
+  }
+
+  public void Dispose()
+  {
+      navManager.LocationChanged -= HandleLocationChanged;
   }
 }
