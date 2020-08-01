@@ -34,7 +34,7 @@
     <p>1350 users</p>
     <h3>Current Restrictions</h3>
     <p>Retail businesses open with social distancing. Restaurants open for delivery only. Gatherings of 10 people are allowed</p>
-    <button class="btn btn-primary btn-block" type="submit">Learn more about restrictions</button>
+    <button class="btn btn-primary btn-block" type="submit" disabled>Learn more about restrictions</button>
   </div>
 </div>
 <div class="row info-card  no-gutters rewards-card">
@@ -57,7 +57,7 @@
     <p><h2><i class="fas fa-thermometer-half"></i></h2></p>
   </div>
   <div class="col-10">
-    <h4>Symptom checker</h4>
+    <h4><a role="button" disabled>Symptom checker</a></h4>
   </div>
 </div>
 <div class="row btn-card  no-gutters" style="margin-bottom: 55px;">
@@ -67,7 +67,7 @@
     </p>
   </div>
   <div class="col-10">
-    <h4>My settings</h4>
+    <h4><a role="button" @onclick="NavigateToSettings">My settings</a></h4>
   </div>
 </div>
 
@@ -79,6 +79,12 @@
   {
     await base.OnInitializedAsync();
     userName = localStorage.GetUserName();
+  }
+  
+  private void NavigateToSettings(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToSettings");
+    navManager.NavigateToPage(AppConstants.PageUrlHomeLoggedIn);
   }
  
 }
