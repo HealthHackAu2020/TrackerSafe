@@ -1,0 +1,73 @@
+@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlRewards)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<Rewards> logger
+
+<div class="row rewardsdetails-card">
+    <div class="col-5 text-center">
+      <img src="img/gift-reward.svg" height="100">
+    </div>
+    <div class="col-7">
+        <h5 class="mt-3">Your total points</h5> 
+        <h2>350</h2>
+    </div>
+</div>
+<div class="row tab-menu no-gutters">
+      <div class="col-6 text-center"><a href="#" class="active" >Redeem</a></div>
+      <div class="col-6 text-center"><a href="#" >Wallet</a></div>
+</div>
+<div class="row business-card">
+    <div class="col-3 businness-img"><img src="img/businesslogo1.gif"></div>
+    <div class="col-6 businness-details">
+      <h4>Starbucks</h4>
+      <p>Coffee & Croissant deal. Half price</p>
+    </div>
+    <div class="point-box text-center float-right">
+      <h2>70</h2>
+      <h6>points</h6>
+    </div>
+</div>
+<div class="row business-card">
+    <div class="col-3 businness-img"><img src="img/businesslogo2.gif"></div>
+    <div class="col-6 businness-details">
+      <h4>Crepes & Waffles</h4>
+      <p>10% discount on lunch menu</p>
+    </div>
+    <div class="point-box text-center float-right">
+      <h2>120</h2>
+      <h6>points</h6>
+    </div>
+</div>
+<div class="row business-card">
+    <div class="col-3 businness-img"><img src="img/businesslogo3.gif"></div>
+    <div class="col-6 businness-details">
+      <h4>Juan Valdez Cafe</h4>
+      <p>A free drink with your order</p>
+    </div>
+    <div class="point-box text-center float-right">
+      <h2>50</h2>
+      <h6>points</h6>
+    </div>
+</div>
+<div class="row business-card" style="margin-bottom: 56px;">
+    <div class="col-3 businness-img"><img src="img/businesslogo4.gif"></div>
+    <div class="col-6 businness-details">
+      <h4>Totto</h4>
+      <p>10% discount on travel backpacks</p>
+    </div>
+    <div class="point-box text-center float-right">
+      <h2>70</h2>
+      <h6>points</h6>
+    </div>
+</div>
+
+@code 
+{
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    logger.LogDebug($"OnInitializedAsync");
+  }
+
+}

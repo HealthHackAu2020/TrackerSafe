@@ -1,0 +1,62 @@
+@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlLearnMore)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<LearnMore> logger
+
+<div class="row info-card no-gutters">
+  <div class="col-12"><h2>Learn More</h2></div>
+  <div class="col-12"><h3>How to prevent COVID-19</h3></div>
+  <div class="row">
+      <div class="col-6">
+      <img src="img/video1.jpg" class="img-fluid mt-2 mb-2">
+      <h5>How to wear a mask</h5>
+      <p>1:30 sec</p>
+    </div>
+    <div class="col-6">
+      <img src="img/video2.jpg" class="img-fluid mt-2 mb-2">
+      <h5>When you should wash your hands and how?</h5>
+      <p>2:30 sec</p>
+    </div>
+  </div>
+</div>
+<div class="row info-card no-gutters">
+  <div class="col-12"><h3>Common questions</h3></div>
+  <div class="row">
+      <div class="col-6">
+      <img src="img/video3.jpg" class="img-fluid mt-2 mb-2">
+      <h5>How to isolate at home when sick?</h5>
+      <p>1:15 sec</p>
+    </div>
+    <div class="col-6">
+      <img src="img/video4.jpg" class="img-fluid mt-2 mb-2">
+      <h5>Does only old people die from COVID-19?</h5>
+      <p>2:00 sec</p>
+    </div>
+  </div>
+</div>
+<div class="row info-card no-gutters" style="margin-bottom: 56px;">
+  <div class="col-12"><h3>Interesting facts</h3></div>
+  <div class="row">
+      <div class="col-6">
+      <img src="img/video5.jpg" class="img-fluid mt-2 mb-2">
+      <h5>Superspreaders: The case of Patient 31 in South Korea</h5>
+      <p>2:10 sec</p>
+    </div>
+    <div class="col-6">
+      <img src="img/video6.jpg" class="img-fluid mt-2 mb-2">
+      <h5>What we can learn from older pandemics</h5>
+      <p>4:30 sec</p>
+    </div>
+  </div>
+</div>
+
+@code 
+{
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    logger.LogDebug($"OnInitializedAsync");
+  }
+
+}

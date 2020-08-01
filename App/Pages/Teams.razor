@@ -1,0 +1,68 @@
+@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlTeams)]
+@inject HttpClient Http
+@inject NavigationManager navManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject ILogger<Teams> logger
+
+<div class="row tab-menu no-gutters">
+  <div class="col-4 text-center"><a href="#" class="active">Top<br />Teams</a></div>
+  <div class="col-4 text-center"><a href="#" >Bottom<br />Teams</a></div>
+  <div class="col-4 text-center"><a href="#" >Complete<br />score</a></div>
+</div>
+<div class="row info-card no-gutters">
+  <h2>Best perfoming teams</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Team</th>
+        <th scope="col">RT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Sumapaz</td>
+        <td>0.0</td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>Teusaquillo</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>La Candelaria</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <th scope="row">4</th>
+        <td>Usaquen</td>
+        <td>0.5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="row info-card no-gutters" style="margin-bottom: 56px;">
+<div class="col-12">
+  <h2>My team</h2>
+  <img src="img/map-team.jpg" class="img-fluid" style="margin-bottom: 2rem;">
+</div>
+<div class="col-12">
+  <h3>Engativa</h3>
+  <p>1350 users</p>
+  <h3>Current Restrictions</h3>
+  <p>Retail businesses open with social distancing. Restaurants open for delivery only. Gatherings of 10 people are allowed</p>
+  <button class="btn btn-primary btn-block" type="submit">Learn more about restrictions</button>
+</div>
+</div>
+
+@code 
+{
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    logger.LogDebug($"OnInitializedAsync");
+  }
+
+}

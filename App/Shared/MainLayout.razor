@@ -57,20 +57,20 @@
       </a>
       <a role="button" class="nav-item" @onclick="NavigateToRewards" >
         <div class="nav-item text-center">
-          <i class="fas fa-star"></i>
-          <h6>Rewards</h6>
+          <i class="fas fa-star @menuCssClassRewards"></i>
+          <h6 class="@menuCssClassRewards">Rewards</h6>
         </div>
       </a>
       <a role="button" class="nav-item" @onclick="NavigateToLearnMore" >
         <div class="nav-item text-center">
-          <i class="fas fa-book"></i>
-          <h6>Learn More</h6>
+          <i class="fas fa-book @menuCssClassLearnMore"></i>
+          <h6 class="@menuCssClassLearnMore">Learn More</h6>
         </div>
       </a>
       <a role="button" class="nav-item" @onclick="NavigateToTeams" >
         <div class="nav-item text-center">
-          <i class="fas fa-user-friends"></i>
-          <h6>Teams</h6>
+          <i class="fas fa-user-friends @menuCssClassTeams"></i>
+          <h6 class="@menuCssClassTeams">Teams</h6>
         </div>
       </a>
   </nav>
@@ -87,6 +87,9 @@
 
   private string menuCssClassProfile = "";
   private string menuCssClassCheckIn = "";
+  private string menuCssClassRewards = "";
+  private string menuCssClassLearnMore = "";
+  private string menuCssClassTeams = "";
 
   private string successMessage = "";
 
@@ -196,6 +199,9 @@
 
     menuCssClassProfile = "";
     menuCssClassCheckIn = "";
+    menuCssClassRewards = "";
+    menuCssClassRewards = "";
+    menuCssClassLearnMore = "";
 
     if (url.ToLower().Contains(AppConstants.PageUrlMyProfile))
     {
@@ -204,6 +210,18 @@
     else if (url.ToLower().Contains(AppConstants.PageUrlCheckIn))
     {
       menuCssClassCheckIn = "active";
+    }
+    else if (url.ToLower().Contains(AppConstants.PageUrlRewards))
+    {
+      menuCssClassRewards = "active";
+    }
+    else if (url.ToLower().Contains(AppConstants.PageUrlLearnMore))
+    {
+      menuCssClassLearnMore = "active";
+    }
+    else if (url.ToLower().Contains(AppConstants.PageUrlTeams))
+    {
+      menuCssClassLearnMore = "active";
     }
   }
 
@@ -228,16 +246,16 @@
   private void NavigateToRewards(MouseEventArgs e)
   {
     logger.LogDebug("NavigateToRewards");
-    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+    navManager.NavigateToPage(AppConstants.PageUrlRewards);
   }
   private void NavigateToLearnMore(MouseEventArgs e)
   {
     logger.LogDebug("NavigateToLearnMore");
-    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+    navManager.NavigateToPage(AppConstants.PageUrlLearnMore);
   }
   private void NavigateToTeams(MouseEventArgs e)
   {
     logger.LogDebug("NavigateToTeams");
-    //navManager.NavigateToPage(AppConstants.PageUrlMyProfile);
+    navManager.NavigateToPage(AppConstants.PageUrlTeams);
   }
 }

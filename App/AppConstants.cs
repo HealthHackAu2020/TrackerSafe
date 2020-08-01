@@ -15,6 +15,8 @@ namespace TrackerSafe.App
     public const string PageUrlMyProfile = "/my-profile";
     public const string PageUrlCheckIn = "/check-in";
     public const string PageUrlRewards = "/rewards";
+    public const string PageUrlLearnMore = "/learn-more";
+    public const string PageUrlTeams = "/teams";
     public const string PageUrlReferralCode = "/referral-code";
     public const string InvalidSession = "/invalid-session";
     public const string UnexpectedError = "/unexptected-error";
