@@ -6,7 +6,7 @@ namespace TrackerSafe.Shared
     public CreateCheckInRequest()
     {
     }
-    public CreateCheckInRequest(DateTime checkInDateUtc, double latitude, double longitude, string placeName)
+    public CreateCheckInRequest(DateTime checkInDateUtc, double? latitude, double? longitude, string placeName)
     {
         CheckInDateUtc = checkInDateUtc;
         Latitude = latitude;
