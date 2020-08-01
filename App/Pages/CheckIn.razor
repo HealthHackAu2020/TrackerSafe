@@ -168,6 +168,8 @@ else
     }
     mapIsSet = true;
 
+    await PlaceMarker();
+
     //This is not working yet, might need to check the NuGet package and wait till it's updated..
     /*
     autocomplete = await Autocomplete.CreateAsync(map.JsRuntime, textAutoComplete, new AutocompleteOptions
@@ -245,7 +247,7 @@ else
       {
         Position = position,
         Map = map.InteropObject,
-        Label = $"You are here"
+        Label = $"Use this location"
       });
     }
     else

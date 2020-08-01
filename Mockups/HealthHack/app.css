@@ -480,5 +480,21 @@ a.nav-item:hover {
     margin-top: 3rem;
 }
 
+.enabled {
+    text-align: right;
+}
+
+.enabled i {
+    font-size: 1.25rem;
+    margin-top: 0.2rem;
+    margin-right: 0.5rem;
+    color: #75bb3f;
+}
+
+.enabled p {
+    font-weight: 700;
+    color: #75bb3f;
+}
+
 
 
