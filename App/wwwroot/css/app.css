@@ -497,4 +497,20 @@ a.nav-item:hover {
     color: #75bb3f;
 }
 
+.not-enabled {
+    text-align: right;
+}
+
+.not-enabled i {
+    font-size: 1.25rem;
+    margin-top: 0.2rem;
+    margin-right: 0.5rem;
+    color: red;
+}
+
+.not-enabled p {
+    font-weight: 700;
+    color: red;
+}
+
 

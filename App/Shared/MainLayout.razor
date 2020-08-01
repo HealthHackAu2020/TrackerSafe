@@ -18,10 +18,14 @@
   {
     @if (isLoggedIn)
     {
-      <div class="row header no-gutters">
-        <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="button" @onclick="NavigateToReferralCode">Share code with friends</button></div>   
-        <div class="col-6 no-margins text-right alert-icon"><i class="far fa-bell"></i></div> 
-      </div>
+      if (!isSubPage)
+      {
+        <div class="row header no-gutters">
+          <div class="col-6 no-gutters"><button class="btn btn-primary navbar-brand" type="button" @onclick="NavigateToReferralCode">Share code with friends</button></div>   
+          <div class="col-6 no-margins text-right alert-icon"><i class="far fa-bell"></i></div> 
+        </div>
+      }
+
       @if (!isRunningInApp && !hasDismissedNotRunningInApp)
       {
         <div class="alert alert-warning row no-gutters justify-content-center" role="alert">
@@ -35,12 +39,20 @@
         </div>
       }
     }
-    <div class="container-fluid">
+
+    @if(isSubPage)
+    {
       @Body
-    </div>
+    }
+    else
+    {
+      <div class="container-fluid">
+        @Body
+      </div>
+    }
   }
   
-  @if (isLoggedIn && isOnBoarded)
+  @if (isLoggedIn && isOnBoarded && !isSubPage)
   {
     <nav class="navbar fixed-bottom navbar-light bg-light">
       <a role="button" class="nav-item" @onclick="NavigateToMyProfile" >
@@ -84,6 +96,7 @@
   private bool isLoading = false;
   private bool isRunningInApp = false;
   private bool hasDismissedNotRunningInApp = false;
+  private bool isSubPage = false;
 
   private string menuCssClassProfile = "";
   private string menuCssClassCheckIn = "";
@@ -203,6 +216,7 @@
     menuCssClassRewards = "";
     menuCssClassLearnMore = "";
     menuCssClassTeams = "";
+    isSubPage = false;
 
     if (url.ToLower().Contains(AppConstants.PageUrlMyProfile))
     {
@@ -223,6 +237,10 @@
     else if (url.ToLower().Contains(AppConstants.PageUrlTeams))
     {
       menuCssClassTeams = "active";
+    }
+    else if (url.ToLower().Contains(AppConstants.PageUrlSettings))
+    {
+      isSubPage = true;
     }
   }
 
