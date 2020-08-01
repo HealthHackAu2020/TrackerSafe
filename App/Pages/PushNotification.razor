@@ -80,7 +80,15 @@ else
 
   public async Task RequestNotificationSubscriptionAsync()
   {
-    var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+    NotificationSubscription subscription = null;
+    try
+    {
+      subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+    }
+    catch (Exception ex)
+    {
+      logger.LogError(ex, "Unable to set push notifications");
+    }
     if (subscription != null)
     {
       logger.LogInformation("RequestNotificationSubscriptionAsync - got subscription!");

@@ -68,7 +68,15 @@ else
     logger.LogDebug($"SetupLocation");
     if (!isConfigured)
     {
-      location = await locationService.GetLocationAsync();
+      Location location = null;
+      try
+      {
+        location = await locationService.GetLocationAsync();
+      }
+      catch (Exception ex)
+      {
+        logger.LogError(ex, "Unable to get location");
+      }
       var appState = localStorage.GetAppState();
       if (location != null)
       {
