@@ -2,23 +2,31 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject NavigationManager navManager
 @inject ILogger<ReferralCode> logger
-<h1 class="text-center top30 mt-2">Referral Code</h1>
-<div class="row justify-content-center pt-3">
-  <div class="col-9 text-center">
-    <p>
-      Use this code to invite your friends and get reward points.
-    </p>
-    <div class="share-code-box">
-      <h2>@referralCode</h2>
-    </div>
-  </div>
+
+<div class="row header bg-maincolour">
+  <div class="col-1 alert-icon"><img src="img/logo.svg" height="50"></div> 
+  <div class="col-11 no-gutters text-right"><h3 style="margin-top: 14px;">Referral Code</h3></div>  
 </div>
-<div class="row justify-content-center">
-  <div class="col-6">
-    @if (!hasFinishedSignup)
-    {
-      <button class="btn btn-primary btn-block mt-5" type="submit" @onclick="FinishSignUp">Finish sign up</button>
-    }
+<div class="main">
+  <div class="content"> 
+    <div class="row justify-content-center pt-3">
+      <div class="col-9 text-center">
+        <p>
+          Use this code to invite your friends and get reward points.
+        </p>
+        <div class="share-code-box">
+          <h2>@referralCode</h2>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-6">
+        @if (!hasFinishedSignup)
+        {
+          <button class="btn btn-primary btn-block mt-5" type="submit" @onclick="FinishSignUp">Finish sign up</button>
+        }
+      </div>
+    </div>
   </div>
 </div>
 
