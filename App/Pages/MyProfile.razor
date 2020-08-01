@@ -1,6 +1,7 @@
 ﻿@attribute [Microsoft.AspNetCore.Components.RouteAttribute(@TrackerSafe.App.AppConstants.PageUrlMyProfile)]
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject NavigationManager navManager
+@inject IModalService modal
 @inject ILogger<MyProfile> logger
 
 
@@ -49,7 +50,7 @@
     <p>Remember to invite friends to join the app to collect points for rewards</p>
   </div>
   <div class="col-12">
-    <button class="btn btn-primary btn-block" type="submit">Share code with friends</button>
+    <button class="btn btn-primary btn-block" type="button" @onclick="NavigateToReferralCode">Share code with friends</button>
   </div>
 </div>
 <div class="row btn-card no-gutters">
@@ -85,6 +86,12 @@
   {
     logger.LogDebug("NavigateToSettings");
     navManager.NavigateToPage(AppConstants.PageUrlSettings);
+  }
+
+  private void NavigateToReferralCode(MouseEventArgs e)
+  {
+    logger.LogDebug("NavigateToReferralCode");
+    modal.Show<ShowReferralCode>("Referral Code");
   }
  
 }
