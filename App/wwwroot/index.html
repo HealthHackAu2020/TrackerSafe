@@ -69,7 +69,7 @@
       }(window.location))
   </script>
   <!-- End Single Page Apps for GitHub Pages -->
-  <script src="_framework/blazor.webassembly.js"></script>
+  <script src="_framework/blazor.webassembly.js" autostart="false"></script>
   <script src="_content/BlazorGoogleMaps/objectManager.js"></script>
   <script src="_content/Blazored.Modal/blazored.modal.js"></script>
   <script>
@@ -98,7 +98,29 @@
     });
   })();
 
-  
+  const supported = (() => {
+    try {
+        if (typeof WebAssembly === "object"
+            && typeof WebAssembly.instantiate === "function") {
+            const module = new WebAssembly.Module(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+            if (module instanceof WebAssembly.Module)
+                return new WebAssembly.Instance(module) instanceof WebAssembly.Instance;
+        }
+    } catch (e) {
+    }
+    return false;
+  })();
+
+  console.log(supported ? "WebAssembly is supported" : "WebAssembly is not supported");
+  if (!supported)
+  {
+    var extraDirectory = "";
+    if (window.location.hostname.toLocaleLowerCase() != "localhost")
+    {
+      extraDirectory = "TrackerSafe/"
+    }
+    window.location = window.location.protocol + '//' + window.location.host + '/' + extraDirectory + 'BrowserNotSupported.html';
+  }
   
   </script>
   <!-- these were only added for carousel, should do via blazor properly -->
