@@ -102,9 +102,11 @@
     localStorage.SetSessionId(sessionId);
 
     //If we are on a page that requires auth.. (I.e. anything but the home page) 
-    //or we are logged in; and we are not heading to logout
+    //or we are logged in; and we are not heading to logout or and error page
     if ((baseUrl.Trim().Length > 0 || !string.IsNullOrWhiteSpace(localStorage.GetJwt()))
-      && $"/{baseUrl.ToLower()}" != AppConstants.PageUrlLogout)
+      && $"/{baseUrl.ToLower()}" != AppConstants.PageUrlLogout 
+      && $"/{baseUrl.ToLower()}" != AppConstants.InvalidSession
+      && $"/{baseUrl.ToLower()}" != AppConstants.InvalidSession)
     {
       isRunningInApp = await JSRuntime.InvokeAsync<bool>("isAppInstalled");
 

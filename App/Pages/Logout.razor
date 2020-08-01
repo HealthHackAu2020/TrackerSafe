@@ -4,7 +4,7 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject ILogger<Logout> logger
 <div class="col">
-  <h1 class="text-center top30 mt-5">Logout</h1>
+  <h1 class="text-center top30 mt-5">Are you sure you want to log out?</h1>
 </div>
 <div class="row justify-content-center pt-3">
   @if (isSuccessful)
@@ -22,7 +22,7 @@
       }
       else
       {
-        <button class="btn btn-primary btn-block mt-5" type="button" @onclick="InitiateLogout">Logout</button>
+        <button class="btn btn-danger btn-block mt-5" type="button" @onclick="InitiateLogout">Logout</button>
       }
     </div>
   }
