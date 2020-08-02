@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>TrackerSafe</title>
+  <base href='/TrackerSafe/' />
+  <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/app.css" rel="stylesheet" />
+  <link href="manifest.json" rel="manifest" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <script src="_content/Blazor.Extensions.Logging/blazor.extensions.logging.js" defer></script>
+
+  <!-- pre release lib doesn't seem to have a way to inject the JS? -->
+  <script src="location.js" defer></script>
+
+  <script src="push-notifications.js" defer></script>
+
+  <script src="https://kit.fontawesome.com/c673014d25.js" crossorigin="anonymous"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRwVYb12NRUpEqHlvIvL3gm32RhDwmyCA&v=3"></script>
+
+  <link href="_content/Blazored.Modal/blazored-modal.css" rel="stylesheet" />
+</head>
+
+<body>
+  <app>
+    <div class="main">
+      <div class="alert alert-info row justify-content-center" role="alert">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Loading...
+      </div>
+      <div id="notsupported" class="content" style="display: none;">
+        <div class="col-12 text-center mt-2">
+          <h2>Having Problems?</h2>
+          <h3 class="alert alert-warning">If this appears to be loading forever, unfortunately your browser or device may not be supported :(</h3>
+          <div class="row">
+            <p>If you wish to try the application out just to see what it's like, it has been extensively tested on the latest version of Google Chrome in all major Desktop Environments (Windows 10, MacOS and Ubuntu)</p>
+            <p>Please also feel free to submit feedback <a href="https://bit.ly/contactsafefeedback">here</a> about the issue (on the second page of the form is asks about any bugs encountered): </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app>
+
+  <!-- Start Single Page Apps for GitHub Pages -->
+  <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafrex/spa-github-pages
+      // Copyright (c) 2016 Rafael Pedicini, licensed under the MIT License
+      // ----------------------------------------------------------------------
+      // This script checks to see if a redirect is present in the query string
+      // and converts it back into the correct url and adds it to the
+      // browser's history using window.history.replaceState(...),
+      // which won't cause the browser to attempt to load the new url.
+      // When the single page app is loaded further down in this file,
+      // the correct url will be waiting in the browser's history for
+      // the single page app to route accordingly.
+      (function (l) {
+        if (l.search) {
+          var q = {};
+          l.search.slice(1).split('&').forEach(function (v) {
+            var a = v.split('=');
+            q[a[0]] = a.slice(1).join('=').replace(/~and~/g, '&');
+          });
+          if (q.p !== undefined) {
+            window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + (q.p || '') +
+              (q.q ? ('?' + q.q) : '') +
+              l.hash
+            );
+          }
+        }
+      }(window.location))
+  </script>
+  <!-- End Single Page Apps for GitHub Pages -->
+  <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+  <script src="_content/BlazorGoogleMaps/objectManager.js"></script>
+  <script src="_content/Blazored.Modal/blazored.modal.js"></script>
+  <script>
+    navigator.serviceWorker.register('service-worker.js').then(reg => {
+      setTimeout(() => {
+        console.log('Checking for updated service worker...');
+        reg.update();
+      }, 300000);
+  });
+
+  (function () {
+    window.isAppInstalled = function () {
+      var res = window.matchMedia('(display-mode: standalone)').matches;
+      console.log('Detected if app was running: ' + res);
+      return res;
+    }
+
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('app installed, reloading');
+      var extraDirectory = "";
+      if (window.location.hostname.toLocaleLowerCase() != "localhost")
+      {
+        extraDirectory = "TrackerSafe/"
+      }
+      window.location = window.location.protocol + '//' + window.location.host + '/' + extraDirectory + 'installed-app';
+    });
+  })();
+
+  const supported = (() => {
+    try {
+        if (typeof WebAssembly === "object"
+            && typeof WebAssembly.instantiate === "function") {
+            const module = new WebAssembly.Module(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+            if (module instanceof WebAssembly.Module)
+                return new WebAssembly.Instance(module) instanceof WebAssembly.Instance;
+        }
+    } catch (e) {
+    }
+    return false;
+  })();
+
+  console.log(supported ? "WebAssembly is supported" : "WebAssembly is not supported");
+  if (supported)
+  {
+    Blazor.start();
+  }
+  else
+  {
+    var extraDirectory = "";
+    if (window.location.hostname.toLocaleLowerCase() != "localhost")
+    {
+      extraDirectory = "TrackerSafe/"
+    }
+    window.location = window.location.protocol + '//' + window.location.host + '/' + extraDirectory + 'BrowserNotSupported.html';
+  }
+
+  (function () {
+    setTimeout(() => {
+      console.log('Waiting for loading for a while before showing warning after 10 seconds');
+      var warning = document.getElementById("notsupported");
+      if (warning)
+      {
+        warning.style.display = "";
+      }
+    }, 10000);
+  })();
+  
+  </script>
+  <!-- these were only added for carousel, should do via blazor properly -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  </body>
+
+</html>
