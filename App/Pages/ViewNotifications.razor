@@ -19,7 +19,7 @@ else
         <thead class="thead-dark">
           <th scope="col"><i class="fas fa-chevron-up"></i>&nbsp;Created At</th>
           <th scope="col">Title</th>
-          <th scope="col">Text</th>
+          <th scope="col">Type</th>
         </thead>
         <tbody>
         @foreach (var currItem in unreadNotifications)
@@ -27,7 +27,7 @@ else
           <tr>
             <td>@currItem.CreatedDateUtc.ToLocalTime().ToString(dateFormat)</td>
             <td>@currItem.Message</td>
-            <td>@currItem.FullText</td>
+            <td>@currItem.TypeOfNotification.ToString()</td>
           </tr>
         }
         </tbody>
@@ -43,7 +43,7 @@ else
         <thead class="thead-dark">
           <th scope="col"><i class="fas fa-chevron-down"></i>&nbsp;Created At</th>
           <th scope="col">Title</th>
-          <th scope="col">Text</th>
+          <th scope="col">Type</th>
         </thead>
         <tbody>
         @foreach (var currItem in readNotifications)
@@ -51,7 +51,7 @@ else
           <tr>
             <td>@currItem.CreatedDateUtc.ToLocalTime().ToString(dateFormat)</td>
             <td>@currItem.Message</td>
-            <td>@currItem.FullText</td>
+            <td>@currItem.TypeOfNotification.ToString()</td>
           </tr>
         }
         </tbody>
