@@ -35,6 +35,16 @@
       <div class="alert alert-info row justify-content-center" role="alert">
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Loading...
       </div>
+      <div id="notsupported" class="content" style="display: none;">
+        <div class="col-12 text-center mt-2">
+          <h2>Having Problems?</h2>
+          <h3 class="alert alert-warning">If this appears to be loading forever, unfortunately your browser or device may not be supported :(</h3>
+          <div class="row">
+            <p>If you wish to try the application out just to see whta it's like, it has been extensively tested on the latest version of Google Chrome in all major Desktop Environments (Windows 10, MacOS and Ubuntu)</p>
+            <p>Please also feel free to submit feedback <a href="https://bit.ly/contactsafefeedback">here</a> about the issue (on the second page of the form is asks about any bugs encountered): </p>
+          </div>
+        </div>
+      </div>
     </div>
   </app>
 
@@ -125,6 +135,17 @@
     }
     window.location = window.location.protocol + '//' + window.location.host + '/' + extraDirectory + 'BrowserNotSupported.html';
   }
+
+  (function () {
+    setTimeout(() => {
+      console.log('Waiting for loading for a while before showing warning after 10 seconds');
+      var warning = document.getElementById("notsupported");
+      if (warning)
+      {
+        warning.style.display = "";
+      }
+    }, 10000);
+  })();
   
   </script>
   <!-- these were only added for carousel, should do via blazor properly -->
